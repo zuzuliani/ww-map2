@@ -7,7 +7,8 @@ module.exports = [{
     entry: './src/index.js',
     mode: 'production',
     externals: {
-        'vue': 'Vue'
+        'vue': 'Vue',
+        'axios': 'axios'
     },
     devServer: {
         contentBase: './dist'
@@ -57,7 +58,8 @@ module.exports = [{
     entry: './src/index.js',
     mode: 'production',
     externals: {
-        'vue': 'Vue'
+        'vue': 'Vue',
+        'axios': 'axios'
     },
     devServer: {
         contentBase: './dist'

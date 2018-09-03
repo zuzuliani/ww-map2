@@ -1,15 +1,58 @@
 <template>
-	<div class="ww-icon">
-		<div class="ww-icon-container">
-			<div v-bind:class="[wwObject.content.data.icon]" aria-hidden="true"></div>
+	<div class="ww-video" v-bind:class="{'ww-video-loaded' : videoLoaded}">
+		<div class="ww-video-container">
+
+			<!-- PREVIEW -->
+			<div v-if="wwAttrs.wwCategory == 'background'" class='ww-video-preview' v-bind:class="{'ww-video-loaded' : videoLoaded}" v-bind:style="{'background-image' : 'url(' + wwObject.content.data.preview + ')'}"></div>
+
+			<!-- LOCAL -->
+			<video v-if="wwObject.content.data.provider == 'local' && wwAttrs.wwCategory == 'background'" class="ww-video-element ww-local-video ww-video-bg" autoplay="true" loop="true" preload="metadata" playsinline>
+				<source v-bind:src="wwObject.content.data.id +  '#t=0.1'" type="video/mp4" />
+			</video>
+
+			<video v-if="wwObject.content.data.provider == 'local' && wwAttrs.wwCategory != 'background'" class="ww-video-element ww-local-video" controlsList="nodownload" preload="metadata" playsinline v-bind:loop="wwObject.content.data.loop" v-bind:autoplay="wwObject.content.data.autoplay" v-bind:muted="wwObject.content.data.muted" v-bind:controls="wwObject.content.data.controls">
+				<source v-bind:src="wwObject.content.data.id +  '#t=0.1'" type="video/mp4" />
+			</video>
+
+			<!-- YOUTUBE -->
+			<iframe v-if="wwObject.content.data.provider == 'youtube' && wwAttrs.wwCategory == 'background'" class="ww-video-element ww-video-bg" v-bind:src="'//www.youtube.com/embed/' + wwObject.content.data.id + '?controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1&playlist=' + wwObject.content.data.id " frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+
+			<iframe v-if="wwObject.content.data.provider == 'youtube' && wwAttrs.wwCategory != 'background'" class="ww-video-element" v-bind:src="'//www.youtube.com/embed/' + wwObject.content.data.id + '?rel=0' + 
+			(wwObject.content.data.loop ? '&loop=1&playlist=' + wwObject.content.data.id : '') + 
+			(wwObject.content.data.autoplay ? '&autoplay=1' : '') + 
+			(wwObject.content.data.muted ? '' : '') + 
+			(!wwObject.content.data.controls ? '&controls=0' : '') + 
+			(!wwObject.content.data.showinfo ? '&showinfo=0' : '')" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+
+			<!-- VIMEO -->
+			<iframe v-if="wwObject.content.data.provider == 'vimeo' && wwAttrs.wwCategory == 'background'" class="ww-video-element ww-video-bg" v-bind:src="'//player.vimeo.com/video/' + wwObject.content.data.id + '?autoplay=1&loop=1&background=1' " frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+
+			<iframe v-if="wwObject.content.data.provider == 'vimeo' && wwAttrs.wwCategory != 'background'" class="ww-video-element" v-bind:src="'//player.vimeo.com/video/' + wwObject.content.data.id + '?a=0' + 
+			(wwObject.content.data.loop ? '&loop=1' : '') + 
+			(wwObject.content.data.autoplay ? '&autoplay=1' : '') + 
+			(wwObject.content.data.muted ? '&mute=1' : '') + 
+			(!wwObject.content.data.controls ? '&controls=0' : '')" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+
+			<!-- DAILYMOTION -->
+			<iframe v-if="wwObject.content.data.provider == 'dailymotion' && wwAttrs.wwCategory == 'background'" class="ww-video-element ww-video-bg" v-bind:src="'//www.dailymotion.com/embed/video/' + wwObject.content.data.id + '?autoplay=1&mute=1' " frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+
+			<iframe v-if="wwObject.content.data.provider == 'dailymotion' && wwAttrs.wwCategory != 'background'" class="ww-video-element" v-bind:src="'//www.dailymotion.com/embed/video/' + wwObject.content.data.id" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+
+			<!-- TWITCH -->
+			<iframe v-if="wwObject.content.data.provider == 'twitch' && wwAttrs.wwCategory == 'background'" class="ww-video-element ww-video-bg" v-bind:src="'//player.twitch.tv/?channel=' + wwObject.content.data.id + '?autoplay=1&muted=1' " frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+
+			<iframe v-if="wwObject.content.data.provider == 'twitch' && wwAttrs.wwCategory != 'background'" class="ww-video-element" v-bind:src="'//player.twitch.tv/?channel=' + wwObject.content.data.id" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+
 		</div>
 	</div>
 </template>
  
 
-<script>
+<script>			
+import Vue from 'vue';
+
 export default {
-	name: "ww-icon",
+	name: "ww-video",
 	props: {
 		wwObject: {
 			type: Object,
@@ -22,154 +65,301 @@ export default {
 	},
 	data() {
 		return {
-
+			videoLoaded: false
 		}
 	},
 	computed: {
 	},
 	watch: {
 	},
-	beforeDestroy() { },
 	methods: {
 		init() {
+			window.addEventListener('resize', this.wwOnResize);
 
+			this.wwLoadVideo();
+		},
+		wwCheckRatio() {
+
+			//If ratio is fixed in ww-object directive, override it here
+			if (this.wwAttrs.wwFixedRatio) {
+				try {
+					var ratio = parseFloat(this.wwAttrs.wwFixedRatio);
+					if (ratio) {
+						return ratio;
+					}
+				}
+				catch (error) {
+					console.log("wwRatio error", error);
+				}
+			}
+
+			if (!this.wwObject.ratio || this.wwObject.ratio < 0) {
+				if (this.wwAttrs.wwDefaultRatio) {
+					return this.wwAttrs.wwDefaultRatio;
+				}
+				else {
+					return 100 / 3 * 2;
+				}
+			}
+
+			return this.wwObject.ratio;
+		},
+		wwApplyVideoRatio() {
+
+			if (!this.wwObject.content.data.videoRatio) {
+				return;
+			}
+
+			var wwVideoElement = this.$el;
+
+			//if (this.wwAttrs.wwCategory == "background") {
+
+			var wwElementRatio = this.$el.offsetWidth / this.$el.offsetHeight;
+
+			if (this.wwObject.content.data.videoRatio >= wwElementRatio) {
+				wwVideoElement.style.height = this.$el.offsetHeight + 'px';
+				wwVideoElement.style.width = (this.wwObject.content.data.videoRatio * this.$el.offsetHeight) + 'px';
+			}
+			else {
+				wwVideoElement.style.width = this.$el.offsetWidth + 'px';
+				wwVideoElement.style.height = (this.$el.offsetWidth / this.wwObject.content.data.videoRatio) + 'px';
+			}
+			//}
+
+			this.videoLoaded = true;
+		},
+		wwAppendPreview() {
+			var wwPreviewHTML = "<div class='ww-video-preview' style='background-image:url(" + scope.wwObject.content.data.preview + ")'></div>";
+
+			wwVideoContainer.append(wwPreviewHTML);
+		},
+		wwOnResize() {
+			this.wwApplyVideoRatio();
+		},
+		wwLoadVideo: async function () {
+
+			try {
+				let wwVideoData = this.wwObject.content.data;
+
+				if (wwVideoData.provider == "local") {
+					const wwVideoHTML = document.createElement("video");
+					wwVideoHTML.appendChild(document.createElement('source', { src: this.wwObject.content.data.id + '#t=0.1', type: 'video/mp4' }));
+
+					var self = this;
+
+					await wwVideoHTML.addEventListener("loadedmetadata", function (e) {
+
+						self.wwObject.content.data.videoRatio = this.videoWidth / this.videoHeight;
+
+						self.wwApplyVideoRatio();
+
+						return;
+					}, false);
+
+
+					return;
+
+
+				}
+				//EXT VIDEO
+				else {
+
+					if (this.wwAttrs.wwCategory == "background") {
+
+						previewAndRatio = await wwGetVideoPreviewAndRatio(wwVideoData.provider, wwVideoData.id, wwVideoData.preview);
+						if (previewAndRatio) {
+							this.wwObject.content.data.videoRatio = previewAndRatio.ratio;
+						}
+					}
+
+					this.wwApplyVideoRatio();
+					return;
+				}
+			}
+			catch (e) {
+
+			}
+
+		},
+		wwGetVideoPreviewAndRatio: async function (provider, videoId, videoPreview) {
+
+			let noImage = videoPreview || "/img/no_image_selected.png";
+
+			let responce = null;
+
+			try {
+				switch (provider) {
+					case "youtube":
+						var previewAndRatio = {
+							preview: videoPreview || '//img.youtube.com/vi/' + videoId + '/maxresdefault.jpg',
+							ratio: 1920 / 1080
+						}
+						return previewAndRatio;
+						break;
+					case "dailymotion":
+
+						responce = await axios.get('https://api.dailymotion.com/video/' + videoId + '?fields=thumbnail_1080_url,height,width');
+
+						if (!responce) {
+							return {
+								preview: noImage,
+								ratio: 1920 / 1080
+							}
+						}
+
+						var previewAndRatio = {
+							preview: noImage,
+							ratio: 1920 / 1080
+						}
+
+						if (responce.data.thumbnail_1080_url) {
+							previewAndRatio.preview = videoPreview || responce.data.thumbnail_1080_url
+						}
+
+						if (responce.data.width && responce.data.height) {
+							previewAndRatio.ratio = responce.data.width / responce.data.height;
+						}
+
+						return previewAndRatio;
+
+
+						break;
+					case "vimeo":
+
+						responce = await axios.get('https://vimeo.com/api/oembed.json?url=https%3A//vimeo.com/' + videoId);
+
+						if (!responce) {
+							return {
+								preview: noImage,
+								ratio: 1920 / 1080
+							}
+						}
+
+						var previewAndRatio = {
+							preview: noImage,
+							ratio: 1920 / 1080
+						}
+
+						if (responce.data.thumbnail_url) {
+
+							var thumb = responce.data.thumbnail_url;
+							var reg = /i.vimeocdn.com\/video\/([^_]*)_/;
+							var matches = thumb.match(reg);
+							if (matches.length == 2) {
+								previewAndRatio.preview = videoPreview || "//i.vimeocdn.com/video/" + matches[1] + "_1920x1080.jpg";
+							}
+						}
+
+						if (responce.data.width && responce.data.height) {
+							previewAndRatio.ratio = responce.data.width / responce.data.height;
+						}
+
+						return previewAndRatio;
+
+						break;
+					default:
+						return {
+							preview: noImage,
+							ratio: 1920 / 1080
+						};
+				}
+			} catch (e) {
+				return {
+					preview: noImage,
+					ratio: 1920 / 1080
+				};
+			}
 		}
 	},
 	mounted() {
-		this.init()
+		this.init();
 
 		wwLib.wwElementsStyle.applyAllStyles({
 			wwObject: this.wwObject,
 			lastWwObject: null,
 			element: this.$el,
 			noAnim: this.wwAttrs.wwNoAnim,
+			noClass: false,
 		});
+
+	},
+	beforeDestroyed() {
+		window.removeEventListener('resize', this.wwOnResize);
 	}
 };
 </script>
 
 <style scoped>
-.ww-icon {
-  text-align: center;
-}
-
-.ww-icon-container {
-  display: inline-flex;
-  justify-content: center;
-}
-
-.ww-icon-container > div {
-  align-self: center;
-}
-
-.ww-button-wrapper {
+.ww-video {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  text-align: center;
-  /*margin-bottom: 10px;*/
+  opacity: 0;
+
+  /*opacity: 0;*/
+  -webkit-transition: opacity 0.3s ease;
+  -moz-transition: opacity 0.3s ease;
+  -o-transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease;
 }
 
-.ww-button {
-  display: inline-block;
-}
-/* ww-class-btn-bg */
-.ww-class-btn-bg-none {
-  background-color: rgba(0, 0, 0, 0) !important;
-}
-
-/* ww-class-btn-border */
-.ww-class-btn-border-none {
-  border: none !important;
+.ww-video-element {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
-.ww-class-btn-border-small {
-  border-style: solid !important;
-  border-width: 1px !important;
+.ww-video.ww-video-bg {
+  display: none;
+  pointer-events: none;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }
 
-.ww-class-btn-border-medium {
-  border-style: solid !important;
-  border-width: 2px !important;
+.ww-video-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
 }
 
-.ww-class-btn-border-big {
-  border-style: solid !important;
-  border-width: 5px !important;
+.ww-video-preview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+
+  /* opacity: 0;*/
+  -webkit-transition: opacity 0.3s ease;
+  -moz-transition: opacity 0.3s ease;
+  -o-transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease;
 }
 
-/* ww-class-btn-format */
-.ww-class-btn-format-square {
-  border-radius: 0 !important;
+.ww-video-loaded.ww-video,
+.ww-video-loaded.ww-video-preview {
+  opacity: 1 !important;
 }
 
-.ww-class-btn-format-round-small {
-  border-radius: 5px !important;
-}
-
-.ww-class-btn-format-round-medium {
-  border-radius: 10px !important;
-}
-
-.ww-class-btn-format-round-big {
-  border-radius: 500px !important;
-}
-
-/* ww-class-btn-padding */
-.ww-class-btn-padding-none {
-  padding: 0 !important;
-}
-
-.ww-class-btn-padding-small {
-  padding: 5px 10px !important;
-}
-
-.ww-class-btn-padding-medium {
-  padding: 10px 20px !important;
-}
-
-.ww-class-btn-padding-big {
-  padding: 20px 40px !important;
-}
-
-/* ww-class-btn-shadow */
-.ww-class-btn-shadow-box-small {
-  -webkit-box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
-  -moz-box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
-  box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
-}
-
-.ww-class-btn-shadow-box-medium {
-  -webkit-box-shadow: 0px 0px 10px 0px rgba(50, 50, 50, 0.75);
-  -moz-box-shadow: 0px 0px 10px 0px rgba(50, 50, 50, 0.75);
-  box-shadow: 0px 0px 10px 0px rgba(50, 50, 50, 0.75);
-}
-
-.ww-class-btn-shadow-box-big {
-  -webkit-box-shadow: 0px 0px 20px 0px rgba(50, 50, 50, 0.75);
-  -moz-box-shadow: 0px 0px 20px 0px rgba(50, 50, 50, 0.75);
-  box-shadow: 0px 0px 20px 0px rgba(50, 50, 50, 0.75);
-}
-
-.ww-class-btn-shadow-bottom-small {
-  -webkit-box-shadow: 0px 2px 5px 0px rgba(50, 50, 50, 0.75);
-  -moz-box-shadow: 0px 2px 5px 0px rgba(50, 50, 50, 0.75);
-  box-shadow: 0px 2px 5px 0px rgba(50, 50, 50, 0.75);
-}
-
-.ww-class-btn-shadow-bottom-medium {
-  -webkit-box-shadow: 0px 3px 10px 0px rgba(50, 50, 50, 0.75);
-  -moz-box-shadow: 0px 3px 10px 0px rgba(50, 50, 50, 0.75);
-  box-shadow: 0px 3px 10px 0px rgba(50, 50, 50, 0.75);
-}
-
-.ww-class-btn-shadow-bottom-big {
-  -webkit-box-shadow: 0px 7px 20px 0px rgba(50, 50, 50, 0.75);
-  -moz-box-shadow: 0px 7px 20px 0px rgba(50, 50, 50, 0.75);
-  box-shadow: 0px 7px 20px 0px rgba(50, 50, 50, 0.75);
-}
-
-/* ww-class-btn-width */
-.ww-class-btn-width-full {
-  width: 100% !important;
+@media (min-width: 769px) {
+  .ww-video.ww-video-bg {
+    display: block !important;
+  }
+  .ww-video-preview {
+    display: none;
+  }
 }
 </style>

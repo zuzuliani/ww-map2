@@ -1,5 +1,5 @@
 {
-  "name": "ww-color",
+  "name": "ww-video",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -7,6 +7,7 @@
     "serve": "webpack-dev-server -d --inline"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "vue": "^2.5.16"
   },
   "devDependencies": {

@@ -1,7 +1,7 @@
 import wwObject from './wwObjectSrc.vue'
 
-const name = "ww-icon";
-const wwEnableMetrics = true;
+const name = "ww-video";
+const wwEnableMetrics = false;
 
 const addComponent = function () {
     if (window.vm) {
@@ -12,11 +12,18 @@ const addComponent = function () {
             {
                 type: name,
                 data: {
-                    icon: "fa fa-thumbs-o-up",
-                    color: "#FFFFFF",
-                    backgroundColor: "#039BE5",
-                    borderColor: '',
-                    classes: ["ww-class-img-format-round", "ww-class-font-size-medium", "ww-class-icon-size-xbig"]
+                    provider: "local",
+                    id: "https://wewebprod.s3-eu-west-1.amazonaws.com/designs/2/sections/7vR07WitdkyFFqzV39C1Hw6oMODecsvx.mp4",
+                    loop: false,
+                    controls: true,
+                    muted: false,
+                    autoplay: false,
+                    showinfo: true,
+                    preview: "https://wewebdev.s3-eu-west-1.amazonaws.com/designs/2/sections/oTDMqrEOtEET8pe0xz4rg5INkzgxQg3c.jpg",
+                    alt: {
+                        "fr_FR": "Une vidéo"
+                    },
+                    videoRatio: 16 / 9
                 }
             },
             wwEnableMetrics
