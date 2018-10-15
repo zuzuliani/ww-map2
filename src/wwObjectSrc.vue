@@ -54,7 +54,7 @@ import Vue from 'vue';
 export default {
 	name: "ww-video",
 	props: {
-		wwObjectRef: Object,
+		wwObject: Object,
 		wwAttrs: {
 			type: Object,
 			default: {}
@@ -66,10 +66,6 @@ export default {
 		}
 	},
 	computed: {
-		wwObject() {
-			//return this.wwObjectRef.wwGet();
-			return this.$store.state.wwObjects[this.wwObjectRef.uniqueId];
-		},
 	},
 	watch: {
 	},
