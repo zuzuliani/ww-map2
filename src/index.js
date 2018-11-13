@@ -1,4 +1,4 @@
-import wwObject from './wwObjectSrc.vue'
+import wwObject from './wwObjectVideo.vue'
 
 const name = "ww-video";
 const wwEnableMetrics = false;
