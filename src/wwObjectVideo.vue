@@ -62,11 +62,13 @@ export default {
     },
     data() {
         return {
-            wwObject: this.wwObjectCtrl.get(),
             videoLoaded: false
         }
     },
     computed: {
+        wwObject() {
+            return this.wwObjectCtrl.get();
+        }
     },
     watch: {
     },
