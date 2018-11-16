@@ -6,9 +6,8 @@ const wwEnableMetrics = false;
 const addComponent = function () {
     if (window.vm) {
 
-        wwLib.wwObject.registerContentType(
-            name,
-            {
+        wwLib.wwObject.register({
+            content: {
                 type: name,
                 data: {
                     provider: "local",
@@ -25,8 +24,13 @@ const addComponent = function () {
                     videoRatio: 16 / 9
                 }
             },
-            wwEnableMetrics
-        );
+            enableMetrics: wwEnableMetrics,
+            /* wwManager:start */
+            cmsOptions: {
+                hoverPointerEvents: true,
+            }
+            /* wwManager:end */
+        });
 
         window.vm.addComponent(name, wwObject);
 
