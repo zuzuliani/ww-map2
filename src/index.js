@@ -1,7 +1,6 @@
 import wwObject from './wwObjectVideo.vue'
 
 const name = "ww-video";
-const wwEnableMetrics = false;
 
 const addComponent = function () {
     if (window.vm) {
@@ -24,10 +23,16 @@ const addComponent = function () {
                     videoRatio: 16 / 9
                 }
             },
-            enableMetrics: wwEnableMetrics,
+            upsales: {
+                wwAnalytics: {
+                    click: false
+                }
+            },
             /* wwManager:start */
             cmsOptions: {
-                hoverPointerEvents: true,
+                wwObjectHover: {
+                    pointerEvents: true
+                }
             }
             /* wwManager:end */
         });
