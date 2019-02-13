@@ -1,6 +1,7 @@
 import wwObject from './wwObjectVideo.vue'
 
-const name = "ww-video";
+const name = "__NAME__";
+const version = '__VERSION__';
 
 const addComponent = function () {
     if (window.vm) {
@@ -37,7 +38,11 @@ const addComponent = function () {
             /* wwManager:end */
         });
 
-        window.vm.addComponent(name, wwObject);
+        window.vm.addComponent({
+            name: name,
+            version: version,
+            content: wwObject
+        });
 
         return true;
     }

@@ -50,7 +50,7 @@
 import Vue from 'vue';
 
 export default {
-    name: "ww-video",
+    name: "__COMPONENT_NAME__",
     props: {
         wwObjectCtrl: Object,
         wwAttrs: {
