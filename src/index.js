@@ -19,7 +19,7 @@ const addComponent = function () {
                     showinfo: true,
                     preview: "https://wewebdev.s3-eu-west-1.amazonaws.com/designs/2/sections/oTDMqrEOtEET8pe0xz4rg5INkzgxQg3c.jpg",
                     alt: {
-                        "fr_FR": "Une vidéo"
+                        "fr": "Une vidéo"
                     },
                     videoRatio: 16 / 9
                 }
