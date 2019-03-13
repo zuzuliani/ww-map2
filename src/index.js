@@ -10,14 +10,14 @@ const addComponent = function () {
             content: {
                 type: name,
                 data: {
-                    provider: "local",
-                    id: "https://wewebprod.s3-eu-west-1.amazonaws.com/designs/2/sections/7vR07WitdkyFFqzV39C1Hw6oMODecsvx.mp4",
+                    provider: "youtube",
+                    id: "o_Lj93pjK1U",
                     loop: false,
                     controls: true,
                     muted: false,
                     autoplay: false,
                     showinfo: true,
-                    preview: "https://wewebdev.s3-eu-west-1.amazonaws.com/designs/2/sections/oTDMqrEOtEET8pe0xz4rg5INkzgxQg3c.jpg",
+                    preview: "",
                     alt: {
                         "fr": "Une vidéo"
                     },
