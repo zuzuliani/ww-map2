@@ -1,4 +1,4 @@
-import wwObject from './wwObjectVideo.vue'
+import wwObject from './wwObjectMap.vue'
 
 const name = "__NAME__";
 const version = '__VERSION__';
@@ -9,20 +9,7 @@ const addComponent = function () {
         wwLib.wwObject.register({
             content: {
                 type: name,
-                data: {
-                    provider: "youtube",
-                    id: "o_Lj93pjK1U",
-                    loop: false,
-                    controls: true,
-                    muted: false,
-                    autoplay: false,
-                    showinfo: true,
-                    preview: "",
-                    alt: {
-                        "fr": "Une vidéo"
-                    },
-                    videoRatio: 16 / 9
-                }
+                data: {}
             },
             upsales: {
                 wwAnalytics: {
@@ -33,6 +20,19 @@ const addComponent = function () {
             cmsOptions: {
                 wwObjectHover: {
                     pointerEvents: true
+                },
+                wwObjectMenu: {
+                    items: [
+                        {
+                            name: 'OPTIONS',
+                            text: {
+                                en: 'Options...',
+                                fr: 'Options...'
+                            },
+                            icon: 'wwi wwi-edit-other',
+                            action: 'edit'
+                        }
+                    ]
                 }
             }
             /* wwManager:end */
