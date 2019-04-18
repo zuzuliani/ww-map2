@@ -26,8 +26,8 @@ const addComponent = function () {
                         {
                             name: 'OPTIONS',
                             text: {
-                                en: 'Options...',
-                                fr: 'Options...'
+                                en: 'Options',
+                                fr: 'Options'
                             },
                             icon: 'wwi wwi-edit-other',
                             action: 'edit'

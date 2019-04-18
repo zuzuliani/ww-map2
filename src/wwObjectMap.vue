@@ -265,27 +265,22 @@ export default {
     },
     methods: {
         init() {
-
-
-            //window.addEventListener('resize', this.wwOnResize);
             this.loaded = true
-            console.log('this.mapHeight', this.mapHeight)
             this.initMap()
-            //this.wwLoadVideo();
         },
         initMap() {
             const self = this;
             this.wwObject.content.data.lat = this.wwObject.content.data.lat || "48.859923";
-            this.wwObject.content.data.long = this.wwObject.content.data.long || "2.344065";
+            this.wwObject.content.data.lng = this.wwObject.content.data.long || "2.344065";
             this.mapsRand = Math.floor(Math.random() * 1000000000);
             window["initMap" + this.mapsRand] = function () {
-                const myLatLng = { lat: parseFloat(self.wwObject.content.data.lat), lng: parseFloat(self.wwObject.content.data.long) };
+                const myLatLng = { lat: parseFloat(self.wwObject.content.data.lat), lng: parseFloat(self.wwObject.content.data.lng) };
 
                 self.map = new google.maps.Map(self.$el.getElementsByClassName('map')[0], {
                     center: myLatLng,
                     scrollwheel: false,
                     zoom: 15,
-                    styles: mapStyles
+                    styles: self.wwObject.content.data.mapStyles || []
                 });
 
                 // ADD SAVED PLACES (MARKERS)
@@ -301,27 +296,72 @@ export default {
             ckeditor.setAttribute('src', this.scriptSrc);
             document.head.appendChild(ckeditor);
         },
+        updatePlaces() {
+            // REMOVE MARKERS ON THE MAP
+            if (this.markers.length > 0) {
+                for (var marker of this.markers) {
+                    marker.setMap(null);
+                }
+            }
+            for (let marker of this.markers) {
+                let latlng = { lat: marker.lat, lng: marker.lng };
+                let icon = '';
+                let image = {};
+                let _marker = new google.maps.Marker({
+                    position: latlng,
+                    map: this.map,
+                    title: 'Click to get details'
+                });
+            }
+        },
         async edit() {
             wwLib.wwObjectHover.setLock(this);
             let editList = {
-                EDIT_RATIO: {
+                WWMAP_MARKERS: {
                     title: {
-                        en: 'Change color ratio',
-                        fr: 'Changer le ratio de la couleur'
+                        en: 'Manage map markers',
+                        fr: 'Editer les marqueurs sur la carte'
                     },
                     desc: {
-                        en: 'Portrait, square, landscape, ...',
-                        fr: 'Portrait, carré, paysage, ...'
+                        en: 'Add, delete, edit markers',
+                        fr: 'Ajoutez, éditez, suppprimez les marqueurs.'
+                    },
+                    icon: 'wwi wwi-ratio',
+                    shortcut: 'r',
+                    next: 'WWMAP_MARKERS'
+                },
+                EDIT_RATIO: {
+                    title: {
+                        en: 'Change map ratio',
+                        fr: 'Changer le ratio de la carte'
+                    },
+                    desc: {
+                        en: 'Portrait, square, landscape, etc.',
+                        fr: 'Portrait, carré, paysage, etc.'
                     },
                     icon: 'wwi wwi-ratio',
                     shortcut: 'r',
                     next: 'WWMAP_RATIO'
+                },
+                WWMAP_EDIT_STYLES: {
+                    title: {
+                        en: 'Edit map style',
+                        fr: 'Editer le style de la carte'
+                    },
+                    desc: {
+                        en: 'Add Google map configuration style',
+                        fr: 'Editer la configuration du style de la carte'
+                    },
+                    icon: 'wwi wwi-ratio',
+                    shortcut: 'r',
+                    next: 'WWMAP_STYLES'
                 }
             }
+
             wwLib.wwPopups.addStory('WWMAP_EDIT', {
                 title: {
-                    en: 'Edit Color',
-                    fr: 'Editer la couleur'
+                    en: 'Edit Map',
+                    fr: 'Editer la carte'
                 },
                 type: 'wwPopupEditWwObject',
                 buttons: null,
@@ -331,33 +371,139 @@ export default {
             })
             wwLib.wwPopups.addStory('WWMAP_RATIO', {
                 title: {
-                    en: 'Color Ratio',
-                    fr: 'Ratio de la couleur'
+                    en: 'Map Ratio',
+                    fr: 'Ratio de la carte'
                 },
                 type: 'wwPopupImageRatio',
                 buttons: {
                     NEXT: {
                         text: {
-                            en: 'Next',
-                            fr: 'Suivant'
+                            en: 'Finish',
+                            fr: 'Terminer'
                         },
-                        next: 'WWCOLOR_STYLE'
+                        next: null
                     }
                 }
             })
+            wwLib.wwPopups.addStory('WWMAP_STYLES', {
+                title: {
+                    en: 'Add Google map configuration style',
+                    fr: 'Editer la configuration du style de la carte'
+                },
+                type: 'wwPopupForm',
+                storyData: {
+                    fields: [
+                        {
+                            label: {
+                                en: 'Style Array :',
+                                fr: '"Array" de style :'
+                            },
+                            type: 'textarea',
+                            key: 'mapStyles',
+                            valueData: 'mapStyles',
+                            desc: {
+                                en: 'The configuration will be added to the map',
+                                fr: 'La configuration sera ajouté à la carte'
+                            },
+                            style: {
+                                height: '600px'
+                            }
+                        }
+                    ]
+                },
+                buttons: {
+                    NEXT: {
+                        text: {
+                            en: 'Finish',
+                            fr: 'Terminer'
+                        },
+                        next: null
+                    }
+                }
+            })
+            wwLib.wwPopups.addStory('WWMAP_MARKERS', {
+                title: {
+                    en: 'Add Google map configuration style',
+                    fr: 'Editer la configuration du style de la carte'
+                },
+                type: 'wwPopupForm',
+                storyData: {
+                    fields: [
+                        {
+                            label: {
+                                en: 'Origin latitud :',
+                                fr: 'latitude de l\'origine :'
+                            },
+                            type: 'text',
+                            key: 'lat',
+                            valueData: 'lat',
+                            desc: {
+                                en: 'latitud of the center of the map',
+                                fr: 'Latitude du centre de la carte'
+                            }
+                        },
+                        {
+                            label: {
+                                en: 'Origin longitud :',
+                                fr: 'Longitude de l\'origine :'
+                            },
+                            type: 'text',
+                            key: 'lng',
+                            valueData: 'lng',
+                            desc: {
+                                en: 'latitud of the center of the map',
+                                fr: 'Latitude du centre de la carte'
+                            }
+                        },
+                        {
+                            label: {
+                                en: 'Zoom :',
+                                fr: 'Zoom :'
+                            },
+                            type: 'text',
+                            key: 'zoom',
+                            valueData: 'zoom',
+                            desc: {
+                                en: 'latitud of the center of the map',
+                                fr: 'Latitude du centre de la carte'
+                            }
+                        }
+                    ]
+                },
+                buttons: {
+                    NEXT: {
+                        text: {
+                            en: 'Finish',
+                            fr: 'Terminer'
+                        },
+                        next: null
+                    }
+                }
+            })
+
             let options = {
                 firstPage: 'WWMAP_EDIT',
                 data: {
-                    wwObject: this.wwObject
+                    wwObject: this.wwObject,
+                    mapStyles: JSON.stringify(this.wwObject.content.data.mapStyles),
+                    lat: this.wwObject.content.data.lat,
+                    lng: this.wwObject.content.data.lng,
+                    zoom: this.wwObject.content.data.zoom
                 }
             }
+
             try {
                 const result = await wwLib.wwPopups.open(options);
+                console.log('RESULT : ', result)
                 /*=============================================m_ÔÔ_m=============================================\
                   STYLE
                 \================================================================================================*/
                 if (typeof (result.ratio) != 'undefined') {
                     this.wwObject.ratio = result.ratio;
+                }
+                if (typeof (result.mapStyles) != 'undefined') {
+                    this.wwObject.content.data.mapStyles = JSON.parse(result.mapStyles || '[]');
+                    this.initMap()
                 }
                 this.wwObjectCtrl.update(this.wwObject);
                 this.wwObjectCtrl.globalEdit(result);
@@ -366,181 +512,6 @@ export default {
             }
             wwLib.wwObjectHover.removeLock();
         }
-        // wwCheckRatio() {
-
-        //     //If ratio is fixed in ww-object directive, override it here
-        //     if (this.wwAttrs.wwFixedRatio) {
-        //         try {
-        //             var ratio = parseFloat(this.wwAttrs.wwFixedRatio);
-        //             if (ratio) {
-        //                 return ratio;
-        //             }
-        //         }
-        //         catch (error) {
-        //             console.log("wwRatio error", error);
-        //         }
-        //     }
-
-        //     if (!this.wwObject.ratio || this.wwObject.ratio < 0) {
-        //         if (this.wwAttrs.wwDefaultRatio) {
-        //             return this.wwAttrs.wwDefaultRatio;
-        //         }
-        //         else {
-        //             return 100 / 3 * 2;
-        //         }
-        //     }
-
-        //     return this.wwObject.ratio;
-        // },
-        // wwApplyVideoRatio() {
-
-        //     if (this.wwAttrs.wwCategory != "background") {
-
-        //         var ratio = this.wwCheckRatio();
-        //         this.$el.style.paddingBottom = ratio + "%";
-        //     }
-
-        //     this.videoLoaded = true;
-        // },
-        // wwAppendPreview() {
-        //     var wwPreviewHTML = "<div class='ww-video-preview' style='background-image:url(" + this.wwObject.content.data.preview + ")'></div>";
-
-        //     wwVideoContainer.append(wwPreviewHTML);
-        // },
-        // wwLoadVideo: async function () {
-
-        //     try {
-        //         let wwVideoData = this.wwObject.content.data;
-
-        //         if (wwVideoData.provider == "local") {
-        //             const wwVideoHTML = document.createElement("video");
-        //             wwVideoHTML.appendChild(document.createElement('source', { src: this.wwObject.content.data.id + '#t=0.1', type: 'video/mp4' }));
-
-        //             var self = this;
-
-        //             await wwVideoHTML.addEventListener("loadedmetadata", function (e) {
-
-        //                 self.wwObject.content.data.videoRatio = this.videoWidth / this.videoHeight;
-
-        //                 self.wwApplyVideoRatio();
-
-        //                 return;
-        //             }, false);
-
-
-        //             return;
-
-
-        //         }
-        //         //EXT VIDEO
-        //         else {
-
-        //             if (this.wwAttrs.wwCategory == "background") {
-
-        //                 previewAndRatio = await wwGetVideoPreviewAndRatio(wwVideoData.provider, wwVideoData.id, wwVideoData.preview);
-        //                 if (previewAndRatio) {
-        //                     this.wwObject.content.data.videoRatio = previewAndRatio.ratio;
-        //                 }
-        //             }
-
-        //             this.wwApplyVideoRatio();
-        //             return;
-        //         }
-        //     }
-        //     catch (e) {
-
-        //     }
-
-        // },
-        // wwGetVideoPreviewAndRatio: async function (provider, videoId, videoPreview) {
-
-        //     let noImage = videoPreview || "https://cdn.wewebapp.io/public/images/no_image_selected.png";
-
-        //     let responce = null;
-
-        //     try {
-        //         switch (provider) {
-        //             case "youtube":
-        //                 var previewAndRatio = {
-        //                     preview: videoPreview || '//img.youtube.com/vi/' + videoId + '/maxresdefault.jpg',
-        //                     ratio: 1920 / 1080
-        //                 }
-        //                 return previewAndRatio;
-        //                 break;
-        //             case "dailymotion":
-
-        //                 responce = await axios.get('https://api.dailymotion.com/video/' + videoId + '?fields=thumbnail_1080_url,height,width');
-
-        //                 if (!responce) {
-        //                     return {
-        //                         preview: noImage,
-        //                         ratio: 1920 / 1080
-        //                     }
-        //                 }
-
-        //                 var previewAndRatio = {
-        //                     preview: noImage,
-        //                     ratio: 1920 / 1080
-        //                 }
-
-        //                 if (responce.data.thumbnail_1080_url) {
-        //                     previewAndRatio.preview = videoPreview || responce.data.thumbnail_1080_url
-        //                 }
-
-        //                 if (responce.data.width && responce.data.height) {
-        //                     previewAndRatio.ratio = responce.data.width / responce.data.height;
-        //                 }
-
-        //                 return previewAndRatio;
-
-
-        //                 break;
-        //             case "vimeo":
-
-        //                 responce = await axios.get('https://vimeo.com/api/oembed.json?url=https%3A//vimeo.com/' + videoId);
-
-        //                 if (!responce) {
-        //                     return {
-        //                         preview: noImage,
-        //                         ratio: 1920 / 1080
-        //                     }
-        //                 }
-
-        //                 var previewAndRatio = {
-        //                     preview: noImage,
-        //                     ratio: 1920 / 1080
-        //                 }
-
-        //                 if (responce.data.thumbnail_url) {
-
-        //                     var thumb = responce.data.thumbnail_url;
-        //                     var reg = /i.vimeocdn.com\/video\/([^_]*)_/;
-        //                     var matches = thumb.match(reg);
-        //                     if (matches.length == 2) {
-        //                         previewAndRatio.preview = videoPreview || "//i.vimeocdn.com/video/" + matches[1] + "_1920x1080.jpg";
-        //                     }
-        //                 }
-
-        //                 if (responce.data.width && responce.data.height) {
-        //                     previewAndRatio.ratio = responce.data.width / responce.data.height;
-        //                 }
-
-        //                 return previewAndRatio;
-
-        //                 break;
-        //             default:
-        //                 return {
-        //                     preview: noImage,
-        //                     ratio: 1920 / 1080
-        //                 };
-        //         }
-        //     } catch (e) {
-        //         return {
-        //             preview: noImage,
-        //             ratio: 1920 / 1080
-        //         };
-        //     }
-        // }
     },
     mounted() {
         this.init();
