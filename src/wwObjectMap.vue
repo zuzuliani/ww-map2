@@ -4,231 +4,11 @@
             <div class="map"></div>
         </div>
     </div>
-
-    <!-- <div class="ww-map" v-bind:class="{'ww-video-loaded' : videoLoaded}">
-        <div class="ww-video-container">
-        
-            <div v-if="wwAttrs.wwCategory == 'background'" class="ww-video-preview" v-bind:class="{'ww-video-loaded' : videoLoaded}" v-bind:style="{'background-image' : 'url(' + wwObject.content.data.preview + ')'}"></div>
-
-            <video v-if="wwObject.content.data.provider == 'local' && wwAttrs.wwCategory == 'background'" class="ww-video-element ww-local-video ww-video-bg" autoplay="true" loop="true" preload="metadata" playsinline>
-                <source v-bind:src="wwObject.content.data.id +  '#t=0.1'" type="video/mp4">
-            </video>
-            
-            <video v-if="wwObject.content.data.provider == 'local' && wwAttrs.wwCategory != 'background'" class="ww-video-element ww-local-video" controlslist="nodownload" preload="metadata" playsinline v-bind:loop="wwObject.content.data.loop" v-bind:autoplay="wwObject.content.data.autoplay" v-bind:muted="wwObject.content.data.muted" v-bind:controls="wwObject.content.data.controls">
-                <source v-bind:src="wwObject.content.data.id +  '#t=0.1'" type="video/mp4">
-            </video>
-
- 
-            <iframe v-if="wwObject.content.data.provider == 'youtube' && wwAttrs.wwCategory == 'background'" class="ww-video-element ww-video-bg" v-bind:src="'//www.youtube.com/embed/' + wwObject.content.data.id + '?controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1&playlist=' + wwObject.content.data.id " frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-            
-            <iframe v-if="wwObject.content.data.provider == 'youtube' && wwAttrs.wwCategory != 'background'" class="ww-video-element" v-bind:src="'//www.youtube.com/embed/' + wwObject.content.data.id + '?rel=0' + 
-			(wwObject.content.data.loop ? '&loop=1&playlist=' + wwObject.content.data.id : '') + 
-			(wwObject.content.data.autoplay ? '&autoplay=1' : '') + 
-			(wwObject.content.data.muted ? '' : '') + 
-			(!wwObject.content.data.controls ? '&controls=0' : '') + 
-			(!wwObject.content.data.showinfo ? '&showinfo=0' : '')" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-
-          
-            <iframe v-if="wwObject.content.data.provider == 'vimeo' && wwAttrs.wwCategory == 'background'" class="ww-video-element ww-video-bg" v-bind:src="'//player.vimeo.com/video/' + wwObject.content.data.id + '?autoplay=1&loop=1&background=1' " frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-            
-            <iframe v-if="wwObject.content.data.provider == 'vimeo' && wwAttrs.wwCategory != 'background'" class="ww-video-element" v-bind:src="'//player.vimeo.com/video/' + wwObject.content.data.id + '?a=0' + 
-			(wwObject.content.data.loop ? '&loop=1' : '') + 
-			(wwObject.content.data.autoplay ? '&autoplay=1' : '') + 
-			(wwObject.content.data.muted ? '&mute=1' : '') + 
-			(!wwObject.content.data.controls ? '&controls=0' : '')" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-
-     
-            <iframe v-if="wwObject.content.data.provider == 'dailymotion' && wwAttrs.wwCategory == 'background'" class="ww-video-element ww-video-bg" v-bind:src="'//www.dailymotion.com/embed/video/' + wwObject.content.data.id + '?autoplay=1&mute=1' " frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-            
-            <iframe v-if="wwObject.content.data.provider == 'dailymotion' && wwAttrs.wwCategory != 'background'" class="ww-video-element" v-bind:src="'//www.dailymotion.com/embed/video/' + wwObject.content.data.id" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-
-  
-            <iframe v-if="wwObject.content.data.provider == 'twitch' && wwAttrs.wwCategory == 'background'" class="ww-video-element ww-video-bg" v-bind:src="'//player.twitch.tv/?channel=' + wwObject.content.data.id + '?autoplay=1&muted=1' " frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-            
-            <iframe v-if="wwObject.content.data.provider == 'twitch' && wwAttrs.wwCategory != 'background'" class="ww-video-element" v-bind:src="'//player.twitch.tv/?channel=' + wwObject.content.data.id" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-        </div>
-    </div>-->
 </template>
  
 
 <script>			
 import Vue from 'vue';
-
-let mapStyles = [
-    {
-        "elementType": "geometry",
-        "stylers": [{
-            "color": "#f5f5f5"
-        }
-        ]
-    }, {
-        "elementType": "labels.icon",
-        "stylers": [{
-            "visibility": "off"
-        }
-        ]
-    }, {
-        "elementType": "labels.text.fill",
-        "stylers": [{
-            "color": "#616161"
-        }
-        ]
-    }, {
-        "elementType": "labels.text.stroke",
-        "stylers": [
-            {
-                "color": "#f5f5f5"
-            }
-        ]
-    },
-    {
-        "featureType": "administrative.land_parcel",
-        "elementType": "labels.text.fill",
-        "stylers": [
-            {
-                "color": "#bdbdbd"
-            }
-        ]
-    },
-    {
-        "featureType": "poi",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#eeeeee"
-            }
-        ]
-    },
-    {
-        "featureType": "poi",
-        "elementType": "labels.text.fill",
-        "stylers": [
-            {
-                "color": "#757575"
-            }
-        ]
-    },
-    {
-        "featureType": "poi.park",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#e5e5e5"
-            }
-        ]
-    },
-    {
-        "featureType": "poi.park",
-        "elementType": "labels.text.fill",
-        "stylers": [
-            {
-                "color": "#9e9e9e"
-            }
-        ]
-    },
-    {
-        "featureType": "road",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#ffffff"
-            }
-        ]
-    },
-    {
-        "featureType": "road.arterial",
-        "elementType": "labels.text.fill",
-        "stylers": [
-            {
-                "color": "#757575"
-            }
-        ]
-    },
-    {
-        "featureType": "road.highway",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#dadada"
-            }
-        ]
-    },
-    {
-        "featureType": "road.highway",
-        "elementType": "labels.text.fill",
-        "stylers": [
-            {
-                "color": "#616161"
-            }
-        ]
-    },
-    {
-        "featureType": "road.local",
-        "elementType": "labels.text.fill",
-        "stylers": [
-            {
-                "color": "#9e9e9e"
-            }
-        ]
-    },
-    {
-        "featureType": "transit.line",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#e5e5e5"
-            }
-        ]
-    },
-    {
-        "featureType": "transit.station",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#eeeeee"
-            }
-        ]
-    },
-    {
-        "featureType": "water",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#c9c9c9"
-            }
-        ]
-    },
-    {
-        "featureType": "water",
-        "elementType": "geometry.fill",
-        "stylers": [
-            {
-                "color": "#5baec5"
-            },
-            {
-                "weight": 1
-            }
-        ]
-    },
-    {
-        "featureType": "water",
-        "elementType": "geometry.stroke",
-        "stylers": [
-            {
-                "color": "#ff005a"
-            }
-        ]
-    },
-    {
-        "featureType": "water",
-        "elementType": "labels.text.fill",
-        "stylers": [
-            {
-                "color": "#9e9e9e"
-            }
-        ]
-    }
-]
 
 export default {
     name: "__COMPONENT_NAME__",
@@ -270,8 +50,10 @@ export default {
         },
         initMap() {
             const self = this;
+            console.log(this.wwObject.content.data)
             this.wwObject.content.data.lat = this.wwObject.content.data.lat || "48.859923";
             this.wwObject.content.data.lng = this.wwObject.content.data.long || "2.344065";
+            this.wwObject.content.data.zoom = this.wwObject.content.data.zoom || 15
             this.mapsRand = Math.floor(Math.random() * 1000000000);
             window["initMap" + this.mapsRand] = function () {
                 const myLatLng = { lat: parseFloat(self.wwObject.content.data.lat), lng: parseFloat(self.wwObject.content.data.lng) };
@@ -279,7 +61,7 @@ export default {
                 self.map = new google.maps.Map(self.$el.getElementsByClassName('map')[0], {
                     center: myLatLng,
                     scrollwheel: false,
-                    zoom: 15,
+                    zoom: self.wwObject.content.data.zoom,
                     styles: self.wwObject.content.data.mapStyles || []
                 });
 
@@ -317,6 +99,19 @@ export default {
         async edit() {
             wwLib.wwObjectHover.setLock(this);
             let editList = {
+                WWMAP_CONFIG: {
+                    title: {
+                        en: 'Congig the map element',
+                        fr: 'Configurer la carte'
+                    },
+                    desc: {
+                        en: 'Edit google key, origin and zoom',
+                        fr: 'Configurez la clé google, l\'origine de la carte et le zoom.'
+                    },
+                    icon: 'wwi wwi-config',
+                    shortcut: 'r',
+                    next: 'WWMAP_CONFIG'
+                },
                 WWMAP_MARKERS: {
                     title: {
                         en: 'Manage map markers',
@@ -421,6 +216,79 @@ export default {
                     }
                 }
             })
+            wwLib.wwPopups.addStory('WWMAP_CONFIG', {
+                title: {
+                    en: 'Add Google map configuration',
+                    fr: 'Editer la configuration de la carte'
+                },
+                type: 'wwPopupForm',
+                storyData: {
+                    fields: [
+                        {
+                            label: {
+                                en: 'Google key :',
+                                fr: 'Clé Google :'
+                            },
+                            type: 'text',
+                            key: 'googleKey',
+                            valueData: 'googleKey',
+                            desc: {
+                                en: 'Google API key',
+                                fr: 'Clé de l\'API de Google'
+                            }
+                        },
+                        {
+                            label: {
+                                en: 'Origin latitud :',
+                                fr: 'latitude de l\'origine :'
+                            },
+                            type: 'text',
+                            key: 'lat',
+                            valueData: 'lat',
+                            desc: {
+                                en: 'latitud of the center of the map',
+                                fr: 'Latitude du centre de la carte'
+                            }
+                        },
+                        {
+                            label: {
+                                en: 'Origin longitud :',
+                                fr: 'Longitude de l\'origine :'
+                            },
+                            type: 'text',
+                            key: 'lng',
+                            valueData: 'lng',
+                            desc: {
+                                en: 'latitud of the center of the map',
+                                fr: 'Latitude du centre de la carte'
+                            }
+                        },
+                        {
+                            label: {
+                                en: 'Zoom :',
+                                fr: 'Zoom :'
+                            },
+                            type: 'text',
+                            key: 'zoom',
+                            valueData: 'zoom',
+                            desc: {
+                                en: 'Manage zoom of the map',
+                                fr: 'Éditer le zoom de la carte'
+                            }
+                        }
+                    ]
+                },
+                buttons: {
+                    NEXT: {
+                        text: {
+                            en: 'Finish',
+                            fr: 'Terminer'
+                        },
+                        next: null
+                    }
+                }
+            })
+
             wwLib.wwPopups.addStory('WWMAP_MARKERS', {
                 title: {
                     en: 'Add Google map configuration style',
@@ -464,8 +332,8 @@ export default {
                             key: 'zoom',
                             valueData: 'zoom',
                             desc: {
-                                en: 'latitud of the center of the map',
-                                fr: 'Latitude du centre de la carte'
+                                en: 'Manage zoom of the map',
+                                fr: 'Éditer le zoom de la carte'
                             }
                         }
                     ]
@@ -481,6 +349,8 @@ export default {
                 }
             })
 
+
+
             let options = {
                 firstPage: 'WWMAP_EDIT',
                 data: {
@@ -488,7 +358,8 @@ export default {
                     mapStyles: JSON.stringify(this.wwObject.content.data.mapStyles),
                     lat: this.wwObject.content.data.lat,
                     lng: this.wwObject.content.data.lng,
-                    zoom: this.wwObject.content.data.zoom
+                    zoom: this.wwObject.content.data.zoom,
+                    googleKey: this.wwObject.content.data.googleKey
                 }
             }
 
@@ -505,8 +376,23 @@ export default {
                     this.wwObject.content.data.mapStyles = JSON.parse(result.mapStyles || '[]');
                     this.initMap()
                 }
+                if (typeof (result.lat) != 'undefined') {
+                    this.wwObject.content.data.lat = result.lat;
+                }
+                if (typeof (result.lng) != 'undefined') {
+                    this.wwObject.content.data.lng = result.lng;
+                }
+                if (typeof (result.zoom) != 'undefined') {
+                    this.wwObject.content.data.zoom = parseInt(result.zoom);
+                    this.map.setZoom(parseInt(result.zoom))
+                }
+                if (typeof (result.googleKey) != 'undefined') {
+                    this.wwObject.content.data.googleKey = result.googleKey;
+                }
+
+                // this.wwObjectCtrl.globalEdit(result);
                 this.wwObjectCtrl.update(this.wwObject);
-                this.wwObjectCtrl.globalEdit(result);
+                console.log(this.wwObject.content.data)
             } catch (error) {
                 console.log(error);
             }
