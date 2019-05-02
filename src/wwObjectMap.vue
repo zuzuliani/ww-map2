@@ -1,6 +1,7 @@
 <template>
     <div class="ww-map" :style="{'padding-bottom':(ratio) +'%'}">
         <div class="map-container">
+            <!-- {{editMode}} -->
             <div class="map"></div>
         </div>
     </div>
@@ -9,6 +10,10 @@
 
 <script>			
 import Vue from 'vue';
+/* wwManager:start */
+import markerPopup from './markerPopup.vue'
+wwLib.wwPopups.addPopup('markerPopup', markerPopup);
+/* wwManager:end */
 
 export default {
     name: "__COMPONENT_NAME__",
@@ -50,7 +55,6 @@ export default {
         },
         initMap() {
             const self = this;
-            console.log(this.wwObject.content.data)
             this.wwObject.content.data.lat = this.wwObject.content.data.lat || "48.859923";
             this.wwObject.content.data.lng = this.wwObject.content.data.long || "2.344065";
             this.wwObject.content.data.zoom = this.wwObject.content.data.zoom || 15
@@ -65,10 +69,8 @@ export default {
                     styles: self.wwObject.content.data.mapStyles || []
                 });
 
-                // ADD SAVED PLACES (MARKERS)
-                // self.updatePlaces()
-                // INIT AUTOCOMPLETE FORM
-                // self.initAutocomplete()
+                // ADD SAVED MARKERS
+                self.updateMarkers()
             }
             var googleKey = this.wwObject.content.data.googleKey || 'AIzaSyCV0YKPp78GUBiMzBdDY2QBIuDMwaKLnHw';
             // Prepare specific script for this specific element
@@ -78,22 +80,35 @@ export default {
             ckeditor.setAttribute('src', this.scriptSrc);
             document.head.appendChild(ckeditor);
         },
-        updatePlaces() {
+        updateMarkers() {
             // REMOVE MARKERS ON THE MAP
-            if (this.markers.length > 0) {
-                for (var marker of this.markers) {
-                    marker.setMap(null);
+            if (this.wwObject.content.data.markers.length > 0) {
+                for (const marker of this.wwObject.content.data.markers) {
+                    // marker.setMap(null);
                 }
             }
-            for (let marker of this.markers) {
-                let latlng = { lat: marker.lat, lng: marker.lng };
+            for (const marker of this.wwObject.content.data.markers) {
+                const latlng = { lat: marker.lat, lng: marker.lng };
                 let icon = '';
                 let image = {};
                 let _marker = new google.maps.Marker({
                     position: latlng,
                     map: this.map,
-                    title: 'Click to get details'
+                    animation: google.maps.Animation.DROP,
                 });
+                if (marker.name) {
+                    const infowindow = new google.maps.InfoWindow({
+                        content: marker.name,
+                        maxWidth: 200
+                    });
+                    _marker.addListener('mouseover', function () {
+                        infowindow.open(this.map, _marker);
+                    });
+                    _marker.addListener('mouseout', function () {
+                        infowindow.close();
+                    });
+                }
+
             }
         },
         async edit() {
@@ -101,7 +116,7 @@ export default {
             let editList = {
                 WWMAP_CONFIG: {
                     title: {
-                        en: 'Congig the map element',
+                        en: 'Config the map element',
                         fr: 'Configurer la carte'
                     },
                     desc: {
@@ -121,7 +136,7 @@ export default {
                         en: 'Add, delete, edit markers',
                         fr: 'Ajoutez, éditez, suppprimez les marqueurs.'
                     },
-                    icon: 'wwi wwi-ratio',
+                    icon: 'wwi wwi-map',
                     shortcut: 'r',
                     next: 'WWMAP_MARKERS'
                 },
@@ -147,7 +162,7 @@ export default {
                         en: 'Add Google map configuration style',
                         fr: 'Editer la configuration du style de la carte'
                     },
-                    icon: 'wwi wwi-ratio',
+                    icon: 'wwi wwi-color',
                     shortcut: 'r',
                     next: 'WWMAP_STYLES'
                 }
@@ -291,62 +306,20 @@ export default {
 
             wwLib.wwPopups.addStory('WWMAP_MARKERS', {
                 title: {
-                    en: 'Add Google map configuration style',
-                    fr: 'Editer la configuration du style de la carte'
+                    en: 'Add Google map markers',
+                    fr: 'Ajouter des points sur la carte'
                 },
-                type: 'wwPopupForm',
-                storyData: {
-                    fields: [
-                        {
-                            label: {
-                                en: 'Origin latitud :',
-                                fr: 'latitude de l\'origine :'
-                            },
-                            type: 'text',
-                            key: 'lat',
-                            valueData: 'lat',
-                            desc: {
-                                en: 'latitud of the center of the map',
-                                fr: 'Latitude du centre de la carte'
-                            }
-                        },
-                        {
-                            label: {
-                                en: 'Origin longitud :',
-                                fr: 'Longitude de l\'origine :'
-                            },
-                            type: 'text',
-                            key: 'lng',
-                            valueData: 'lng',
-                            desc: {
-                                en: 'latitud of the center of the map',
-                                fr: 'Latitude du centre de la carte'
-                            }
-                        },
-                        {
-                            label: {
-                                en: 'Zoom :',
-                                fr: 'Zoom :'
-                            },
-                            type: 'text',
-                            key: 'zoom',
-                            valueData: 'zoom',
-                            desc: {
-                                en: 'Manage zoom of the map',
-                                fr: 'Éditer le zoom de la carte'
-                            }
-                        }
-                    ]
-                },
+                type: 'markerPopup',
                 buttons: {
-                    NEXT: {
+                    FINISH: {
                         text: {
                             en: 'Finish',
                             fr: 'Terminer'
                         },
-                        next: null
+                        next: false
                     }
                 }
+
             })
 
 
@@ -359,7 +332,8 @@ export default {
                     lat: this.wwObject.content.data.lat,
                     lng: this.wwObject.content.data.lng,
                     zoom: this.wwObject.content.data.zoom,
-                    googleKey: this.wwObject.content.data.googleKey
+                    googleKey: this.wwObject.content.data.googleKey || 'AIzaSyCV0YKPp78GUBiMzBdDY2QBIuDMwaKLnHw',
+                    markers: this.wwObject.content.data.markers
                 }
             }
 
@@ -388,6 +362,10 @@ export default {
                 }
                 if (typeof (result.googleKey) != 'undefined') {
                     this.wwObject.content.data.googleKey = result.googleKey;
+                }
+                if (typeof (result.markers) != 'undefined') {
+                    this.wwObject.content.data.markers = result.markers;
+                    this.updateMarkers()
                 }
 
                 // this.wwObjectCtrl.globalEdit(result);
