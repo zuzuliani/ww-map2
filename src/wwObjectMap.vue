@@ -254,28 +254,28 @@ export default {
                         },
                         {
                             label: {
-                                en: 'Origin latitud :',
-                                fr: 'latitude de l\'origine :'
+                                en: 'Origin latitude :',
+                                fr: 'Latitude de l\'origine :'
                             },
                             type: 'text',
                             key: 'lat',
                             valueData: 'lat',
                             desc: {
-                                en: 'latitud of the center of the map',
+                                en: 'latitude of the center of the map',
                                 fr: 'Latitude du centre de la carte'
                             }
                         },
                         {
                             label: {
-                                en: 'Origin longitud :',
+                                en: 'Origin longitude :',
                                 fr: 'Longitude de l\'origine :'
                             },
                             type: 'text',
                             key: 'lng',
                             valueData: 'lng',
                             desc: {
-                                en: 'latitud of the center of the map',
-                                fr: 'Latitude du centre de la carte'
+                                en: 'Longitude of the center of the map',
+                                fr: 'Longitude du centre de la carte'
                             }
                         },
                         {
