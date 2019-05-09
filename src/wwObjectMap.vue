@@ -56,11 +56,13 @@ export default {
         initMap() {
             const self = this;
             this.wwObject.content.data.lat = this.wwObject.content.data.lat || "48.859923";
-            this.wwObject.content.data.lng = this.wwObject.content.data.long || "2.344065";
+            this.wwObject.content.data.lng = this.wwObject.content.data.lng || "2.344065";
             this.wwObject.content.data.zoom = this.wwObject.content.data.zoom || 15
             this.mapsRand = Math.floor(Math.random() * 1000000000);
             window["initMap" + this.mapsRand] = function () {
                 const myLatLng = { lat: parseFloat(self.wwObject.content.data.lat), lng: parseFloat(self.wwObject.content.data.lng) };
+
+                console.log(myLatLng);
 
                 self.map = new google.maps.Map(self.$el.getElementsByClassName('map')[0], {
                     center: myLatLng,
@@ -254,27 +256,27 @@ export default {
                         },
                         {
                             label: {
-                                en: 'Origin latitud :',
+                                en: 'Origin latitude :',
                                 fr: 'latitude de l\'origine :'
                             },
                             type: 'text',
                             key: 'lat',
                             valueData: 'lat',
                             desc: {
-                                en: 'latitud of the center of the map',
+                                en: 'latitude of the center of the map',
                                 fr: 'Latitude du centre de la carte'
                             }
                         },
                         {
                             label: {
-                                en: 'Origin longitud :',
+                                en: 'Origin longitude :',
                                 fr: 'Longitude de l\'origine :'
                             },
                             type: 'text',
                             key: 'lng',
                             valueData: 'lng',
                             desc: {
-                                en: 'latitud of the center of the map',
+                                en: 'latitude of the center of the map',
                                 fr: 'Latitude du centre de la carte'
                             }
                         },
@@ -340,6 +342,7 @@ export default {
             try {
                 const result = await wwLib.wwPopups.open(options);
                 console.log('RESULT : ', result)
+
                 /*=============================================m_ÔÔ_m=============================================\
                   STYLE
                 \================================================================================================*/
@@ -348,13 +351,14 @@ export default {
                 }
                 if (typeof (result.mapStyles) != 'undefined') {
                     this.wwObject.content.data.mapStyles = JSON.parse(result.mapStyles || '[]');
-                    this.initMap()
                 }
                 if (typeof (result.lat) != 'undefined') {
                     this.wwObject.content.data.lat = result.lat;
+                    this.map.setCenter({ lat: parseFloat(this.wwObject.content.data.lat), lng: parseFloat(this.wwObject.content.data.lng) });
                 }
                 if (typeof (result.lng) != 'undefined') {
                     this.wwObject.content.data.lng = result.lng;
+                    this.map.setCenter({ lat: parseFloat(this.wwObject.content.data.lat), lng: parseFloat(this.wwObject.content.data.lng) });
                 }
                 if (typeof (result.zoom) != 'undefined') {
                     this.wwObject.content.data.zoom = parseInt(result.zoom);
@@ -365,11 +369,11 @@ export default {
                 }
                 if (typeof (result.markers) != 'undefined') {
                     this.wwObject.content.data.markers = result.markers;
-                    this.updateMarkers()
+                    // this.updateMarkers()
                 }
 
-                // this.wwObjectCtrl.globalEdit(result);
                 this.wwObjectCtrl.update(this.wwObject);
+                this.wwObjectCtrl.globalEdit(result);
                 console.log(this.wwObject.content.data)
             } catch (error) {
                 console.log(error);
