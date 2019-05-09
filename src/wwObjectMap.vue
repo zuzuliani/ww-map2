@@ -263,7 +263,7 @@ export default {
                             key: 'lat',
                             valueData: 'lat',
                             desc: {
-                                en: 'latitude of the center of the map',
+                                en: 'Latitude of the center of the map',
                                 fr: 'Latitude du centre de la carte'
                             }
                         },
@@ -276,8 +276,8 @@ export default {
                             key: 'lng',
                             valueData: 'lng',
                             desc: {
-                                en: 'latitude of the center of the map',
-                                fr: 'Latitude du centre de la carte'
+                                en: 'Longitude of the center of the map',
+                                fr: 'Longitude du centre de la carte'
                             }
                         },
                         {

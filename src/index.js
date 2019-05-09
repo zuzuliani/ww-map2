@@ -25,6 +25,7 @@ const addComponent = function () {
                     items: [
                         {
                             name: 'OPTIONS',
+                            main: true,
                             text: {
                                 en: 'Options',
                                 fr: 'Options'
