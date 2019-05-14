@@ -186,7 +186,7 @@ export default {
                     en: 'Map Ratio',
                     fr: 'Ratio de la carte'
                 },
-                type: 'wwPopupImageRatio',
+                type: 'wwPopupWwObjectRatio',
                 buttons: {
                     NEXT: {
                         text: {
