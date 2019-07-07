@@ -84,6 +84,7 @@ export default {
         },
         updateMarkers() {
             // REMOVE MARKERS ON THE MAP
+            if (typeof this.wwObject.content.data.markers == 'undefined') return;
             if (this.wwObject.content.data.markers.length > 0) {
                 for (const marker of this.wwObject.content.data.markers) {
                     // marker.setMap(null);
@@ -369,7 +370,7 @@ export default {
                 }
                 if (typeof (result.markers) != 'undefined') {
                     this.wwObject.content.data.markers = result.markers;
-                    // this.updateMarkers()
+                    this.updateMarkers()
                 }
 
                 this.wwObjectCtrl.update(this.wwObject);
