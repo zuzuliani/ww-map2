@@ -1,5 +1,8 @@
 <template>
     <div class="popup__container">
+        <div class="loader" :style="{'display': loader ? 'absolute':'none'}">
+            <i class="fas fa-circle-notch fa-spin"></i>
+        </div>
         <div v-if="markers.length">
             <div class="subtitle">Fill in the address input to update marker coordinates</div>
             <div class="grid header">
@@ -10,10 +13,10 @@
             </div>
             <div class="grid marker" v-for="(marker, index) in markers" :key="marker.uniqueId">
                 <div class="name">
-                    <input type="text" name="name" v-model="marker.name">
+                    <input type="text" name="name" v-model="marker.name" />
                 </div>
                 <div class="address">
-                    <input type="text" name="address" :class="'marker-address-' + marker.uniqueId" v-model="marker.address">
+                    <input type="text" name="address" :class="'marker-address-' + marker.uniqueId" v-model="marker.address" />
                 </div>
                 <div class="coordinate">{{marker.lat.toFixed(4)}}</div>
                 <div class="coordinate">{{marker.lng.toFixed(4)}}</div>
@@ -31,6 +34,7 @@
 </template>
 
 <script> 
+import { setTimeout } from 'timers';
 
 export default {
     name: "markerPopup",
@@ -44,7 +48,8 @@ export default {
     },
     data() {
         return {
-            markers: []
+            markers: [],
+            loader: true
         }
     },
     computed: {
@@ -53,21 +58,42 @@ export default {
     },
     methods: {
         init() {
-            console.log("options : ", this.options)
-
-            // Add google api to manager app which loads this popup
-            this.scriptSrc = 'https://maps.googleapis.com/maps/api/js?key=' + this.options.data.googleKey + '&libraries=places'
-            let ckeditor = document.createElement('script');
-            ckeditor.setAttribute('src', this.scriptSrc);
-            document.head.appendChild(ckeditor);
-
             this.markers = this.options.data.markers || []
             this.options.result.markers = this.markers
+            this.loader = true
 
-            for (const markerIndex of this.markers) {
+            this.$nextTick(() => {
+                for (const marker of this.markers) {
+                    this.initAutocomplete(marker)
+                }
+                this.loader = false
+            })
+
+
+        },
+        initAutocomplete(marker) {
+            // Create the autocomplete object, restricting the search to geographical
+            // location types.
+
+            // const markerElement = this.$el.querySelector(`.marker-address-${marker.uniqueId}`)
+
+            setTimeout(() => {
                 const markerElement = this.$el.querySelector(`.marker-address-${marker.uniqueId}`)
-                this.initAutocomplete(markerElement, marker)
-            }
+                let autocomplete = new (wwLib.getManagerWindow().google).maps.places.Autocomplete(
+                    markerElement,
+                    { types: ['geocode'] });
+                // When the user selects an address from the dropdown, populate the address
+                // fields in the form.
+
+                autocomplete.addListener('place_changed', fillInMarker);
+                function fillInMarker() {
+                    const place = autocomplete.getPlace();
+                    marker.address = place.formatted_address;
+                    marker.lat = place.geometry.location.lat();
+                    marker.lng = place.geometry.location.lng();
+                }
+
+            }, 1000)
         },
         addMarker() {
             this.markers.push({
@@ -77,38 +103,25 @@ export default {
                 uniqueId: wwLib.wwUtils.getUniqueId()
             })
             this.$nextTick(() => {
-                const classEl = `.marker-address-${this.markers[this.markers.length - 1].uniqueId}`
-                const markerElement = this.$el.querySelector(classEl)
-                console.log(markerElement)
-                this.initAutocomplete(markerElement, this.markers[this.markers.length - 1])
-                console.log(this.markers)
+                this.initAutocomplete(this.markers[this.markers.length - 1])
             })
         },
         removeMarker(index) {
             this.markers.splice(index, 1);
-        },
-        initAutocomplete(inputElement, marker) {
-            // Create the autocomplete object, restricting the search to geographical
-            // location types.
-            const autocomplete = new google.maps.places.Autocomplete(
-                inputElement,
-                { types: ['geocode'] });
-
-            // When the user selects an address from the dropdown, populate the address
-            // fields in the form.
-            autocomplete.addListener('place_changed', fillInMarker);
-            function fillInMarker() {
-                const place = autocomplete.getPlace();
-                console.log(place)
-                marker.address = place.formatted_address;
-                marker.lat = place.geometry.location.lat();
-                marker.lng = place.geometry.location.lng();
-            }
         }
-
     },
-    created: function () {
-        this.init()
+    mounted: function () {
+        // Add google api to manager app which loads this popup
+        this.scriptSrc = 'https://maps.googleapis.com/maps/api/js?key=' + this.options.data.googleKey + '&libraries=places'
+        let ckeditor = wwLib.getManagerDocument().createElement('script');
+        ckeditor.type = 'text/javascript'
+        ckeditor.setAttribute('src', this.scriptSrc);
+        wwLib.getManagerDocument().head.appendChild(ckeditor);
+
+        ckeditor.onload = this.init
+
+
+
     }
 }
 </script>
@@ -119,6 +132,19 @@ export default {
     font-family: "Monserrat", sans-serif;
     font-size: 1.2rem;
     flex-grow: 1;
+    .loader {
+        height: 100%;
+        width: 100%;
+        background-color: #fafafa;
+        i {
+            color: grey;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+        }
+    }
     .title {
         color: #e02a4d;
         font-family: "Monserrat", sans-serif;

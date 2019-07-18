@@ -27,7 +27,8 @@ export default {
     data() {
         return {
             markers: [],
-            loaded: false
+            loaded: false,
+            markerInstances: []
         }
     },
     computed: {
@@ -38,7 +39,6 @@ export default {
             return this.wwObjectCtrl.getEditMode() == 'CONTENT'
         },
         ratio() {
-            console.log('RATIO : ', this.wwObject.ratio)
             if (this.wwObject.ratio > 0) {
                 return this.wwObject.ratio
             } else {
@@ -62,8 +62,6 @@ export default {
             window["initMap" + this.mapsRand] = function () {
                 const myLatLng = { lat: parseFloat(self.wwObject.content.data.lat), lng: parseFloat(self.wwObject.content.data.lng) };
 
-                console.log(myLatLng);
-
                 self.map = new google.maps.Map(self.$el.getElementsByClassName('map')[0], {
                     center: myLatLng,
                     scrollwheel: false,
@@ -72,25 +70,30 @@ export default {
                 });
 
                 // ADD SAVED MARKERS
-                self.updateMarkers()
+                self.addMarkers('first-time')
             }
-            var googleKey = this.wwObject.content.data.googleKey || 'AIzaSyCV0YKPp78GUBiMzBdDY2QBIuDMwaKLnHw';
+            let googleKey = this.wwObject.content.data.googleKey || 'AIzaSyCV0YKPp78GUBiMzBdDY2QBIuDMwaKLnHw';
             // Prepare specific script for this specific element
             this.scriptSrc = 'https://maps.googleapis.com/maps/api/js?key=' + googleKey + '&libraries=places&callback=initMap' + this.mapsRand;
             // Add script google map to head
-            let ckeditor = document.createElement('script');
+            let ckeditor = wwLib.getFrontDocument().createElement('script');
             ckeditor.setAttribute('src', this.scriptSrc);
-            document.head.appendChild(ckeditor);
+            wwLib.getFrontDocument().head.appendChild(ckeditor);
         },
-        updateMarkers() {
-            // REMOVE MARKERS ON THE MAP
+        addMarkers(option) {
             if (typeof this.wwObject.content.data.markers == 'undefined') return;
-            if (this.wwObject.content.data.markers.length > 0) {
-                for (const marker of this.wwObject.content.data.markers) {
-                    // marker.setMap(null);
+            if (option == 'update') {
+                // REMOVE MARKERS ON THE MAP
+                if (this.markerInstances.length > 0) {
+                    for (let markerInstance of this.markerInstances) {
+                        markerInstance.setMap(null);
+                        markerInstance = null
+                    }
+                    this.markerInstances = []
                 }
             }
-            for (const marker of this.wwObject.content.data.markers) {
+
+            for (let marker of this.wwObject.content.data.markers) {
                 const latlng = { lat: marker.lat, lng: marker.lng };
                 let icon = '';
                 let image = {};
@@ -99,6 +102,7 @@ export default {
                     map: this.map,
                     animation: google.maps.Animation.DROP,
                 });
+                this.markerInstances.push(_marker);
                 if (marker.name) {
                     const infowindow = new google.maps.InfoWindow({
                         content: marker.name,
@@ -111,8 +115,9 @@ export default {
                         infowindow.close();
                     });
                 }
-
             }
+
+
         },
         async edit() {
             wwLib.wwObjectHover.setLock(this);
@@ -342,7 +347,6 @@ export default {
 
             try {
                 const result = await wwLib.wwPopups.open(options);
-                console.log('RESULT : ', result)
 
                 /*=============================================m_ÔÔ_m=============================================\
                   STYLE
@@ -370,12 +374,11 @@ export default {
                 }
                 if (typeof (result.markers) != 'undefined') {
                     this.wwObject.content.data.markers = result.markers;
-                    this.updateMarkers()
+                    this.addMarkers('update')
                 }
 
                 this.wwObjectCtrl.update(this.wwObject);
                 this.wwObjectCtrl.globalEdit(result);
-                console.log(this.wwObject.content.data)
             } catch (error) {
                 console.log(error);
             }
