@@ -1,0 +1,269 @@
+<template>
+    <div class="ww-map" :style="{ 'padding-bottom': ratio + '%' }">
+        <div class="map-container">
+            <!-- {{editMode}} -->
+            <div class="map-placeholder" v-if="isError" :class="{ error: isError }">
+                <div class="placeholder-content">
+                    If you want to use a Google map, you need to have a Google API Key. You can follow theses
+                    instructions :
+                    <br />
+                    <a href="https://developers.google.com/maps/documentation/javascript/get-api-key" target="_blank">
+                        <button>developers.google.com | API Key documentation</button></a
+                    >
+                </div>
+            </div>
+            <div class="map" ref="map" :class="{ error: isError }"></div>
+        </div>
+    </div>
+</template>
+
+<script>
+import Vue from 'vue';
+import { Loader } from '@googlemaps/js-api-loader';
+import { addMarkers } from './popups';
+import stylesConfig from './stylesConfig.json';
+
+export default {
+    name: '__COMPONENT_NAME__',
+    props: {
+        wwEditorState: Boolean,
+        content: Object,
+    },
+    data() {
+        return {
+            markerInstances: [],
+            markers: [
+                {
+                    name: 'Paris',
+                    lat: '48.859923',
+                    lng: '2.344065',
+                    isActive: true,
+                },
+            ],
+
+            loader: null,
+            google: null,
+            mapOptions: [],
+        };
+    },
+    wwDefaultContent: {
+        // AIzaSyCV0YKPp78GUBiMzBdDY2QBIuDMwaKLnHw
+        googleKey: 'AIzaSyCV0YKPp78GUBiMzBdDY2QBIuDMwaKLnHw',
+        lat: '48.859923',
+        lng: '2.344065',
+        zoom: 15,
+        mapsRand: Math.floor(Math.random() * 1000000000),
+        mapStyle: 'dark',
+        initialMarker: false,
+    },
+    computed: {
+        ratio() {
+            if (this.content.ratio > 0) {
+                return this.content.ratio;
+            } else {
+                return 50;
+            }
+        },
+        isError() {
+            if (this.content && this.content.googleKey) {
+                return !this.content.googleKey.length;
+            }
+            return true;
+        },
+    },
+    watch: {
+        'content.googleKey'() {
+            if (this.loader) {
+                this.loader.deleteScript();
+            }
+            this.initMap();
+        },
+        'content.lat'() {
+            this.initMap();
+        },
+        'content.lng'() {
+            this.initMap();
+        },
+        'content.zoom'() {
+            this.initMap();
+        },
+        'content.mapsRand'() {
+            this.initMap();
+        },
+        'content.mapStyle'() {
+            this.initMap();
+        },
+    },
+    methods: {
+        initMap() {
+            const { lat, lng, zoom, googleKey } = this.content;
+
+            if (!lat || !lng || !zoom) return;
+            if (!this.loader) {
+                this.loader = new Loader({
+                    apiKey: googleKey,
+                    language: wwLib.wwLang.lang,
+                });
+            }
+
+            const mapOptions = {
+                center: {
+                    lat: parseFloat(lat),
+                    lng: parseFloat(lng),
+                },
+                zoom: zoom,
+                styles: stylesConfig[`${this.content.mapStyle}`],
+            };
+
+            this.loader
+                .load()
+                .then(() => {
+                    this.googleMapInstance = new google.maps.Map(this.$refs.map, mapOptions);
+                })
+                .catch(err => {
+                    wwLib.wwLog.error(err);
+                });
+
+            if (this.markers && this.markers.length) {
+                this.addMarkers();
+            }
+        },
+        async openMarkersPopup() {
+            try {
+                const result = await addMarkers({
+                    markers: this.markers,
+                });
+                if (result.markers && result.markers.length) {
+                    this.markers = result.markers;
+                    this.addMarkers();
+                }
+            } catch (err) {
+                wwLib.wwLog.error(err);
+            }
+        },
+        addMarkers() {
+            if (this.markerInstances.length > 0) {
+                for (let markerInstance of this.markerInstances) {
+                    markerInstance.setMap(null);
+                    markerInstance = null;
+                }
+                this.markerInstances = [];
+            }
+
+            if (this.loader) {
+                for (let marker of this.markers) {
+                    this.loader
+                        .load()
+                        .then(() => {
+                            if (!marker.isActive) return;
+                            const latlng = { lat: parseFloat(marker.lat), lng: parseFloat(marker.lng) };
+                            // let icon = '';
+                            // let image = {};
+                            let _marker = new google.maps.Marker({
+                                position: latlng,
+                                map: this.googleMapInstance,
+                                animation: google.maps.Animation.DROP,
+                            });
+                            this.markerInstances.push(_marker);
+                            if (marker.name) {
+                                const infowindow = new google.maps.InfoWindow({
+                                    content: marker.name,
+                                    maxWidth: 200,
+                                });
+                                _marker.addListener('mouseover', function () {
+                                    infowindow.open(this.googleMapInstance, _marker);
+                                });
+                                _marker.addListener('mouseout', function () {
+                                    infowindow.close();
+                                });
+                            }
+                        })
+                        .catch(err => {
+                            wwLib.wwLog.error(err);
+                        });
+                }
+            }
+        },
+        mounted() {
+            this.initMap();
+        },
+        beforeDestroy() {
+            const scripts = document.querySelectorAll("script[src*='maps.googleapis.com/maps-api-v3']");
+            for (let i = 0; i < scripts.length; i++) {
+                scripts[i].parentNode.removeChild(scripts[i]);
+            }
+        },
+    },
+};
+</script>
+
+<style lang="scss" scoped>
+.ww-map {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    .map-container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        .map {
+            z-index: 1;
+            height: 100%;
+            width: 100%;
+
+            &.error {
+                filter: blur(8px);
+            }
+        }
+        .map-placeholder {
+            z-index: 2;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            &.error {
+                background-color: rgba(0, 0, 0, 0.4);
+            }
+
+            .placeholder-content {
+                width: 90%;
+                background: white;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 0.8em 1.2em;
+                border-radius: 12px;
+
+                button {
+                    margin-top: 50px;
+                    padding: 0.8em 1.2em;
+                    border: none;
+                    border-radius: 12px;
+                    background-color: #099af2;
+                    color: white;
+                    font-weight: 500;
+                    font-size: 1.1em;
+                    transition: 0.3s;
+
+                    &:hover {
+                        cursor: pointer;
+                        background-color: #077ac0;
+                        transition: 0.3s;
+                    }
+                }
+            }
+        }
+    }
+}
+</style>

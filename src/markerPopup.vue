@@ -1,6 +1,6 @@
 <template>
     <div class="popup__container">
-        <div class="loader" :style="{'display': loader ? 'absolute':'none'}">
+        <div class="loader" :style="{ display: loader ? 'absolute' : 'none' }">
             <i class="fas fa-circle-notch fa-spin"></i>
         </div>
         <div v-if="markers.length">
@@ -16,10 +16,15 @@
                     <input type="text" name="name" v-model="marker.name" />
                 </div>
                 <div class="address">
-                    <input type="text" name="address" :class="'marker-address-' + marker.uniqueId" v-model="marker.address" />
+                    <input
+                        type="text"
+                        name="address"
+                        :class="'marker-address-' + marker.uniqueId"
+                        v-model="marker.address"
+                    />
                 </div>
-                <div class="coordinate">{{marker.lat.toFixed(4)}}</div>
-                <div class="coordinate">{{marker.lng.toFixed(4)}}</div>
+                <div class="coordinate">{{ marker.lat.toFixed(4) }}</div>
+                <div class="coordinate">{{ marker.lng.toFixed(4) }}</div>
                 <div class="remove">
                     <div class="btn" @click="removeMarker(index)">
                         <span class="wwi wwi-cross"></span>
@@ -33,43 +38,40 @@
     </div>
 </template>
 
-<script> 
+<script>
 import { setTimeout } from 'timers';
 
 export default {
-    name: "markerPopup",
+    name: 'markerPopup',
     props: {
         options: {
             type: Object,
             default: function () {
-                return {}
-            }
+                return {};
+            },
         },
     },
     data() {
         return {
             markers: [],
-            loader: true
-        }
+            loader: true,
+        };
     },
-    computed: {
-    },
-    watch: {
-    },
+    computed: {},
+    watch: {},
     methods: {
         init() {
-            this.markers = this.options.data.markers || []
-            this.options.result.markers = this.markers
-            this.loader = true
+            console.log('MARKER 📍 :', this);
+            this.markers = this.options.data.markers || [];
+            this.options.result.markers = this.markers;
+            this.loader = true;
 
             this.$nextTick(() => {
                 for (const marker of this.markers) {
-                    this.initAutocomplete(marker)
+                    this.initAutocomplete(marker);
                 }
-                this.loader = false
-            })
-
-
+                this.loader = false;
+            });
         },
         initAutocomplete(marker) {
             // Create the autocomplete object, restricting the search to geographical
@@ -78,10 +80,10 @@ export default {
             // const markerElement = this.$el.querySelector(`.marker-address-${marker.uniqueId}`)
 
             setTimeout(() => {
-                const markerElement = this.$el.querySelector(`.marker-address-${marker.uniqueId}`)
-                let autocomplete = new (wwLib.getManagerWindow().google).maps.places.Autocomplete(
-                    markerElement,
-                    { types: ['geocode'] });
+                const markerElement = this.$el.querySelector(`.marker-address-${marker.uniqueId}`);
+                let autocomplete = new (wwLib.getManagerWindow().google.maps.places.Autocomplete)(markerElement, {
+                    types: ['geocode'],
+                });
                 // When the user selects an address from the dropdown, populate the address
                 // fields in the form.
 
@@ -92,44 +94,40 @@ export default {
                     marker.lat = place.geometry.location.lat();
                     marker.lng = place.geometry.location.lng();
                 }
-
-            }, 1000)
+            }, 1000);
         },
         addMarker() {
             this.markers.push({
                 name: '',
                 lat: 0,
                 lng: 0,
-                uniqueId: wwLib.wwUtils.getUniqueId()
-            })
+                uniqueId: wwLib.wwUtils.getUniqueId(),
+            });
             this.$nextTick(() => {
-                this.initAutocomplete(this.markers[this.markers.length - 1])
-            })
+                this.initAutocomplete(this.markers[this.markers.length - 1]);
+            });
         },
         removeMarker(index) {
             this.markers.splice(index, 1);
-        }
+        },
     },
     mounted: function () {
         // Add google api to manager app which loads this popup
-        this.scriptSrc = 'https://maps.googleapis.com/maps/api/js?key=' + this.options.data.googleKey + '&libraries=places'
-        let ckeditor = wwLib.getManagerDocument().createElement('script');
-        ckeditor.type = 'text/javascript'
-        ckeditor.setAttribute('src', this.scriptSrc);
-        wwLib.getManagerDocument().head.appendChild(ckeditor);
-
-        ckeditor.onload = this.init
-
-
-
-    }
-}
+        // this.scriptSrc =
+        //     'https://maps.googleapis.com/maps/api/js?key=' + this.options.data.googleKey + '&libraries=places';
+        // let ckeditor = wwLib.getManagerDocument().createElement('script');
+        // ckeditor.type = 'text/javascript';
+        // ckeditor.setAttribute('src', this.scriptSrc);
+        // wwLib.getManagerDocument().head.appendChild(ckeditor);
+        // ckeditor.onload = this.init;
+    },
+};
 </script>
 
 <style scoped lang="scss">
 .popup__container {
     position: relative;
-    font-family: "Monserrat", sans-serif;
+    font-family: 'Monserrat', sans-serif;
     font-size: 1.2rem;
     flex-grow: 1;
     .loader {
@@ -147,7 +145,7 @@ export default {
     }
     .title {
         color: #e02a4d;
-        font-family: "Monserrat", sans-serif;
+        font-family: 'Monserrat', sans-serif;
         font-size: 1.2rem;
         text-transform: uppercase;
         font-weight: bold;
