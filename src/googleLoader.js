@@ -1,41 +1,18 @@
-// do not edit .js files directly - edit src/index.jst
-
-var fastDeepEqual = function equal(a, b) {
-    if (a === b) return true;
-
-    if (a && b && typeof a == 'object' && typeof b == 'object') {
-        if (a.constructor !== b.constructor) return false;
-
-        var length, i, keys;
-        if (Array.isArray(a)) {
-            length = a.length;
-            if (length != b.length) return false;
-            for (i = length; i-- !== 0; ) if (!equal(a[i], b[i])) return false;
-            return true;
-        }
-
-        if (a.constructor === RegExp) return a.source === b.source && a.flags === b.flags;
-        if (a.valueOf !== Object.prototype.valueOf) return a.valueOf() === b.valueOf();
-        if (a.toString !== Object.prototype.toString) return a.toString() === b.toString();
-
-        keys = Object.keys(a);
-        length = keys.length;
-        if (length !== Object.keys(b).length) return false;
-
-        for (i = length; i-- !== 0; ) if (!Object.prototype.hasOwnProperty.call(b, keys[i])) return false;
-
-        for (i = length; i-- !== 0; ) {
-            var key = keys[i];
-
-            if (!equal(a[key], b[key])) return false;
-        }
-
-        return true;
-    }
-
-    // true if both NaN, false otherwise
-    return a !== a && b !== b;
-};
+/**
+ * Copyright 2019 Google LLC. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at.
+ *
+ *      Http://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 /**
  * Copyright 2019 Google LLC. All Rights Reserved.
@@ -52,7 +29,8 @@ var fastDeepEqual = function equal(a, b) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-const DEFAULT_ID = '__googleMapsScriptId';
+import isEqual from 'fast-deep-equal';
+export const DEFAULT_ID = '__googleMapsScriptId';
 /**
  * [[Loader]] makes it easier to add Google Maps JavaScript API to your application
  * dynamically using
@@ -72,7 +50,7 @@ const DEFAULT_ID = '__googleMapsScriptId';
  * })
  * ```
  */
-class Loader {
+export class Loader {
     /**
      * Creates an instance of Loader using [[LoaderOptions]]. No defaults are set
      * using this library, instead the defaults are set by the Google Maps
@@ -114,7 +92,7 @@ class Loader {
         this.retries = retries;
         this.url = url;
         if (Loader.instance) {
-            if (!fastDeepEqual(this.options, Loader.instance.options)) {
+            if (!isEqual(this.options, Loader.instance.options)) {
                 throw new Error(
                     `Loader must not be called again with different options. ${JSON.stringify(
                         this.options
@@ -128,7 +106,6 @@ class Loader {
             Loader.instance = null;
         };
     }
-
     get options() {
         return {
             version: this.version,
@@ -182,8 +159,6 @@ class Loader {
      * Load the Google Maps JavaScript API script and return a Promise.
      */
     load() {
-        console.log('IN LOAD');
-
         return this.loadPromise();
     }
     /**
@@ -249,7 +224,7 @@ class Loader {
     loadErrorCallback(e) {
         this.errors.push(e);
         if (this.errors.length <= this.retries) {
-            const delay = this.errors.length * Math.pow(2, this.errors.length);
+            const delay = this.errors.length * 2 ** this.errors.length;
             console.log(`Failed to load Google Maps script, retrying in ${delay} ms.`);
             setTimeout(() => {
                 this.deleteScript();
@@ -273,17 +248,19 @@ class Loader {
     }
     execute() {
         if (window.google && window.google.maps && window.google.maps.version) {
-            this.deleteScript();
-            // console.warn("Aborted attempt to load Google Maps JS with @googlemaps/js-api-loader." +
-            //     "This may result in undesirable behavior as script parameters may not match.");
-            // this.callback();
+            console.warn(
+                'Aborted attempt to load Google Maps JS with @googlemaps/js-api-loader.' +
+                    'This may result in undesirable behavior as script parameters may not match.'
+            );
+            this.callback();
         }
         this.resetIfRetryingFailed();
         if (this.done) {
             this.callback();
         } else {
-            if (this.loading);
-            else {
+            if (this.loading) {
+                // do nothing but wait
+            } else {
                 this.loading = true;
                 this.setCallback();
                 this.setScript();
@@ -291,6 +268,3 @@ class Loader {
         }
     }
 }
-
-export { DEFAULT_ID, Loader };
-//# sourceMappingURL=index.esm.js.map
