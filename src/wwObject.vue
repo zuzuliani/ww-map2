@@ -1,33 +1,24 @@
 <template>
-    <div class="ww-map" :class="{ editing: isEditing }">
+    <div class="ww-map">
         <div class="map-container">
-            <!-- {{editMode}} -->
             <div class="map-placeholder" v-if="isError" :class="{ error: isError }">
                 <div class="placeholder-content">
                     If you want to use a Google map, you need to have a Google API Key. If you already have one, you can
                     add it in the map settings. <br /><br />
                     Otherwise you can follow theses instructions :
-                    <br />
                     <a href="https://developers.google.com/maps/documentation/javascript/get-api-key" target="_blank">
-                        <button>developers.google.com | API Key documentation</button></a
+                        <button>API Key documentation</button></a
                     >
+                    <span v-if="wrongKey" class="wrongKey">Your API key has the wrong format</span>
                 </div>
             </div>
             <div class="map" ref="map" :class="{ error: isError }"></div>
-            <!-- <iframe
-                class="map-iframe"
-                frameborder="12"
-                style="border: 0"
-                :src="`https://www.google.com/maps/embed/v1/place?key=${content.googleKey}
-    &q=Space+Needle,Seattle+WA`"
-            >
-            </iframe> -->
         </div>
     </div>
 </template>
 
 <script>
-import { Loader } from '@googlemaps/js-api-loader';
+import { Loader } from './googleLoader';
 /* wwEditor:start */
 import { addMarkers } from './popups';
 /* wwEditor:end */
@@ -55,11 +46,10 @@ export default {
 
             loader: null,
             google: null,
+            wrongKey: false,
         };
     },
     wwDefaultContent: {
-        // PERSO: AIzaSyDdIrKETKggpgW9Yjfxoze37hGSqCJE1f8
-        // AIzaSyCV0YKPp78GUBiMzBdDY2QBIuDMwaKLnHw
         googleKey: '',
         lat: '48.859923',
         lng: '2.344065',
@@ -118,10 +108,19 @@ export default {
             const { lat, lng, zoom, googleKey } = this.content;
 
             if (!this.isGoogleKeyMatch) {
+                if (googleKey.length) this.wrongKey = true;
+                setTimeout(() => {
+                    this.wrongKey = false;
+                }, 8000);
                 return;
             }
+            this.wrongKey = false;
 
             if (!lat || !lng || !zoom || !googleKey.length) return;
+
+            if (this.loader) {
+                this.loader.reset();
+            }
             this.loader = new Loader({
                 apiKey: googleKey,
                 language: wwLib.wwLang.lang,
@@ -208,12 +207,6 @@ export default {
         mounted() {
             this.initMap();
         },
-        beforeDestroy() {
-            const scripts = document.querySelectorAll("script[src*='maps.googleapis.com/maps-api-v3']");
-            for (let i = 0; i < scripts.length; i++) {
-                scripts[i].parentNode.removeChild(scripts[i]);
-            }
-        },
     },
 };
 </script>
@@ -225,10 +218,6 @@ export default {
     height: 100%;
     overflow: hidden;
     padding: 20%;
-
-    &.editing {
-        pointer-events: none;
-    }
 
     .map-container {
         position: absolute;
@@ -279,8 +268,13 @@ export default {
                 padding: 0.8em 1.2em;
                 border-radius: 12px;
 
+                .wrongKey {
+                    color: #f44336;
+                    padding: 10px;
+                }
+
                 button {
-                    margin-top: 50px;
+                    margin-top: 20px;
                     padding: 0.8em 1.2em;
                     border: none;
                     border-radius: 12px;
