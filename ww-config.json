@@ -27,14 +27,6 @@
                     ]
                 },
                 "path": "mapStyle"
-            },
-            "customStyle": {
-                "path": "customStyle",
-                "label": { "en": "Custom style", "fr": "Style personnalisé" },
-                "type": "Text",
-                "options": {
-                    "placeholder": "Paste JSON here"
-                }
             }
         },
         "settingsOptions": {
@@ -43,7 +35,7 @@
                 "label": { "en": "Google key", "fr": "Clé Google" },
                 "type": "Text",
                 "options": {
-                    "placeholder": "Google key"
+                    "placeholder": "Google API key"
                 }
             },
             "lat": {

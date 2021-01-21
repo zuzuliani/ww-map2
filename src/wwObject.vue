@@ -1,11 +1,12 @@
 <template>
-    <div class="ww-map" :style="{ 'padding-bottom': ratio + '%' }">
+    <div class="ww-map" :class="{ editing: isEditing }">
         <div class="map-container">
             <!-- {{editMode}} -->
             <div class="map-placeholder" v-if="isError" :class="{ error: isError }">
                 <div class="placeholder-content">
-                    If you want to use a Google map, you need to have a Google API Key. You can follow theses
-                    instructions :
+                    If you want to use a Google map, you need to have a Google API Key. If you already have one, you can
+                    add it in the map settings. <br /><br />
+                    Otherwise you can follow theses instructions :
                     <br />
                     <a href="https://developers.google.com/maps/documentation/javascript/get-api-key" target="_blank">
                         <button>developers.google.com | API Key documentation</button></a
@@ -13,20 +14,31 @@
                 </div>
             </div>
             <div class="map" ref="map" :class="{ error: isError }"></div>
+            <!-- <iframe
+                class="map-iframe"
+                frameborder="12"
+                style="border: 0"
+                :src="`https://www.google.com/maps/embed/v1/place?key=${content.googleKey}
+    &q=Space+Needle,Seattle+WA`"
+            >
+            </iframe> -->
         </div>
     </div>
 </template>
 
 <script>
-import Vue from 'vue';
 import { Loader } from '@googlemaps/js-api-loader';
+/* wwEditor:start */
 import { addMarkers } from './popups';
+/* wwEditor:end */
 import stylesConfig from './stylesConfig.json';
 
 export default {
     name: '__COMPONENT_NAME__',
     props: {
+        /* wwEditor:start */
         wwEditorState: Boolean,
+        /* wwEditor:end */
         content: Object,
     },
     data() {
@@ -43,12 +55,12 @@ export default {
 
             loader: null,
             google: null,
-            mapOptions: [],
         };
     },
     wwDefaultContent: {
+        // PERSO: AIzaSyDdIrKETKggpgW9Yjfxoze37hGSqCJE1f8
         // AIzaSyCV0YKPp78GUBiMzBdDY2QBIuDMwaKLnHw
-        googleKey: 'AIzaSyCV0YKPp78GUBiMzBdDY2QBIuDMwaKLnHw',
+        googleKey: '',
         lat: '48.859923',
         lng: '2.344065',
         zoom: 15,
@@ -57,25 +69,32 @@ export default {
         initialMarker: false,
     },
     computed: {
+        isEditing() {
+            /* wwEditor:start */
+            return this.wwEditorState.editMode === wwLib.wwSectionHelper.EDIT_MODES.CONTENT;
+            /* wwEditor:end */
+            // eslint-disable-next-line no-unreachable
+            return false;
+        },
         ratio() {
             if (this.content.ratio > 0) {
                 return this.content.ratio;
             } else {
-                return 50;
+                return 60;
             }
         },
         isError() {
             if (this.content && this.content.googleKey) {
-                return !this.content.googleKey.length;
+                return !this.isGoogleKeyMatch;
             }
             return true;
+        },
+        isGoogleKeyMatch() {
+            return this.content.googleKey.match(/^(AIza[0-9A-Za-z-_]{35})$/);
         },
     },
     watch: {
         'content.googleKey'() {
-            if (this.loader) {
-                this.loader.deleteScript();
-            }
             this.initMap();
         },
         'content.lat'() {
@@ -98,13 +117,15 @@ export default {
         initMap() {
             const { lat, lng, zoom, googleKey } = this.content;
 
-            if (!lat || !lng || !zoom) return;
-            if (!this.loader) {
-                this.loader = new Loader({
-                    apiKey: googleKey,
-                    language: wwLib.wwLang.lang,
-                });
+            if (!this.isGoogleKeyMatch) {
+                return;
             }
+
+            if (!lat || !lng || !zoom || !googleKey.length) return;
+            this.loader = new Loader({
+                apiKey: googleKey,
+                language: wwLib.wwLang.lang,
+            });
 
             const mapOptions = {
                 center: {
@@ -156,14 +177,14 @@ export default {
                         .load()
                         .then(() => {
                             if (!marker.isActive) return;
+
                             const latlng = { lat: parseFloat(marker.lat), lng: parseFloat(marker.lng) };
-                            // let icon = '';
-                            // let image = {};
                             let _marker = new google.maps.Marker({
                                 position: latlng,
                                 map: this.googleMapInstance,
                                 animation: google.maps.Animation.DROP,
                             });
+
                             this.markerInstances.push(_marker);
                             if (marker.name) {
                                 const infowindow = new google.maps.InfoWindow({
@@ -203,12 +224,24 @@ export default {
     width: 100%;
     height: 100%;
     overflow: hidden;
+    padding: 20%;
+
+    &.editing {
+        pointer-events: none;
+    }
+
     .map-container {
         position: absolute;
         width: 100%;
         height: 100%;
         top: 0;
         left: 0;
+
+        .map-iframe {
+            width: 100%;
+            height: 100%;
+        }
+
         .map {
             z-index: 1;
             height: 100%;
@@ -236,6 +269,7 @@ export default {
             }
 
             .placeholder-content {
+                text-align: center;
                 width: 90%;
                 background: white;
                 display: flex;

@@ -87,11 +87,17 @@ export default {
                 lng: '',
                 isActive: true,
             });
+
             this.setResult();
         },
         removeMarker(index) {
             if (this.lastField) return;
-            this.markers.splice(index, 1);
+            try {
+                this.markers.splice(index, 1);
+            } catch (error) {
+                wwLib.wwLog.error(error);
+            }
+
             this.setResult();
         },
         setResult() {
