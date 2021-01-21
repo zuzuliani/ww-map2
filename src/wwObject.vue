@@ -121,32 +121,32 @@ export default {
             if (this.loader) {
                 this.loader.reset();
             }
-            this.loader = new Loader({
-                apiKey: googleKey,
-                language: wwLib.wwLang.lang,
-            });
+            // this.loader = new Loader({
+            //     apiKey: googleKey,
+            //     language: wwLib.wwLang.lang,
+            // });
 
-            const mapOptions = {
-                center: {
-                    lat: parseFloat(lat),
-                    lng: parseFloat(lng),
-                },
-                zoom: zoom,
-                styles: stylesConfig[`${this.content.mapStyle}`],
-            };
+            // const mapOptions = {
+            //     center: {
+            //         lat: parseFloat(lat),
+            //         lng: parseFloat(lng),
+            //     },
+            //     zoom: zoom,
+            //     styles: stylesConfig[`${this.content.mapStyle}`],
+            // };
 
-            this.loader
-                .load()
-                .then(() => {
-                    this.googleMapInstance = new google.maps.Map(this.$refs.map, mapOptions);
-                })
-                .catch(err => {
-                    wwLib.wwLog.error(err);
-                });
+            // this.loader
+            //     .load()
+            //     .then(() => {
+            //         this.googleMapInstance = new google.maps.Map(this.$refs.map, mapOptions);
+            //     })
+            //     .catch(err => {
+            //         wwLib.wwLog.error(err);
+            //     });
 
-            if (this.markers && this.markers.length) {
-                this.addMarkers();
-            }
+            // if (this.markers && this.markers.length) {
+            //     this.addMarkers();
+            // }
         },
         async openMarkersPopup() {
             try {
