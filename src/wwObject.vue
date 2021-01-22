@@ -18,8 +18,7 @@
 </template>
 
 <script>
-// import { Loader } from './googleLoader';
-import Loader from './googleLoaderOld';
+import { Loader } from './googleLoader';
 /* wwEditor:start */
 import { addMarkers } from './popups';
 /* wwEditor:end */
@@ -68,13 +67,6 @@ export default {
             // eslint-disable-next-line no-unreachable
             return false;
         },
-        ratio() {
-            if (this.content.ratio > 0) {
-                return this.content.ratio;
-            } else {
-                return 60;
-            }
-        },
         isError() {
             if (this.content && this.content.googleKey) {
                 return !this.isGoogleKeyMatch;
@@ -119,12 +111,14 @@ export default {
                 }, 8000);
                 return;
             }
+
             this.wrongKey = false;
             if (!lat || !lng || !zoom || !googleKey.length) return;
             if (this.loader) {
                 this.loader.reset();
             }
-            this.loader = new this.loaderClass({
+
+            this.loader = new Loader({
                 apiKey: googleKey,
                 language: wwLib.wwLang.lang,
             });
@@ -137,6 +131,7 @@ export default {
                 zoom: zoom,
                 styles: stylesConfig[`${this.content.mapStyle}`],
             };
+
             this.loader
                 .load()
                 .then(() => {
