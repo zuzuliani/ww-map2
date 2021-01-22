@@ -114,14 +114,14 @@ class Loader {
         this.retries = retries;
         this.url = url;
         if (Loader.instance) {
-            // if (!fastDeepEqual(this.options, Loader.instance.options)) {
-            //     throw new Error(
-            //         `Loader must not be called again with different options. ${JSON.stringify(
-            //             this.options
-            //         )} !== ${JSON.stringify(Loader.instance.options)}`
-            //     );
-            // }
-            // return Loader.instance;
+            if (!fastDeepEqual(this.options, Loader.instance.options)) {
+                throw new Error(
+                    `Loader must not be called again with different options. ${JSON.stringify(
+                        this.options
+                    )} !== ${JSON.stringify(Loader.instance.options)}`
+                );
+            }
+            return Loader.instance;
         }
         Loader.instance = this;
         this.reset = () => {
