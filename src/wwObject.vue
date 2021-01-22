@@ -18,7 +18,8 @@
 </template>
 
 <script>
-import { Loader } from './googleLoader';
+// import { Loader } from './googleLoader';
+import Loader from './googleLoaderOld';
 /* wwEditor:start */
 import { addMarkers } from './popups';
 /* wwEditor:end */
@@ -47,6 +48,7 @@ export default {
             loader: null,
             google: null,
             wrongKey: false,
+            loaderClass: null,
         };
     },
     wwDefaultContent: {
@@ -80,7 +82,10 @@ export default {
             return true;
         },
         isGoogleKeyMatch() {
-            return this.content.googleKey.match(/^(AIza[0-9A-Za-z-_]{35})$/);
+            if (this.content.googleKey) {
+                return this.content.googleKey.match(/^(AIza[0-9A-Za-z-_]{35})$/);
+            }
+            return false;
         },
     },
     watch: {
@@ -106,8 +111,9 @@ export default {
     methods: {
         initMap() {
             const { lat, lng, zoom, googleKey } = this.content;
+
             if (!this.isGoogleKeyMatch) {
-                if (googleKey.length) this.wrongKey = true;
+                if (googleKey && googleKey.length) this.wrongKey = true;
                 setTimeout(() => {
                     this.wrongKey = false;
                 }, 8000);
@@ -118,10 +124,11 @@ export default {
             if (this.loader) {
                 this.loader.reset();
             }
-            this.loader = new Loader({
+            this.loader = new this.loaderClass({
                 apiKey: googleKey,
                 language: wwLib.wwLang.lang,
             });
+
             const mapOptions = {
                 center: {
                     lat: parseFloat(lat),
@@ -195,9 +202,10 @@ export default {
                 }
             }
         },
-        mounted() {
-            this.initMap();
-        },
+    },
+    mounted() {
+        this.loaderClass = Loader.google.maps.plugins.loader.Loader;
+        this.initMap();
     },
 };
 </script>
