@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { Loader } from './googleLoader';
+// import { Loader } from './googleLoader';
 /* wwEditor:start */
 import { addMarkers } from './popups';
 /* wwEditor:end */
@@ -102,39 +102,39 @@ export default {
     },
     methods: {
         initMap() {
-            const { lat, lng, zoom, googleKey } = this.content;
-            if (!this.isGoogleKeyMatch) {
-                if (googleKey && googleKey.length) this.wrongKey = true;
-                setTimeout(() => {
-                    this.wrongKey = false;
-                }, 8000);
-                return;
-            }
-            this.wrongKey = false;
-            if (!lat || !lng || !zoom || !googleKey.length) return;
-            if (this.loader) {
-                this.loader.reset();
-            }
-            this.loader = new Loader({
-                apiKey: googleKey,
-                language: wwLib.wwLang.lang,
-            });
-            const mapOptions = {
-                center: {
-                    lat: parseFloat(lat),
-                    lng: parseFloat(lng),
-                },
-                zoom: zoom,
-                styles: stylesConfig[`${this.content.mapStyle}`],
-            };
-            this.loader
-                .load()
-                .then(() => {
-                    this.googleMapInstance = new google.maps.Map(this.$refs.map, mapOptions);
-                })
-                .catch(err => {
-                    wwLib.wwLog.error(err);
-                });
+            // const { lat, lng, zoom, googleKey } = this.content;
+            // if (!this.isGoogleKeyMatch) {
+            //     if (googleKey && googleKey.length) this.wrongKey = true;
+            //     setTimeout(() => {
+            //         this.wrongKey = false;
+            //     }, 8000);
+            //     return;
+            // }
+            // this.wrongKey = false;
+            // if (!lat || !lng || !zoom || !googleKey.length) return;
+            // if (this.loader) {
+            //     this.loader.reset();
+            // }
+            // this.loader = new Loader({
+            //     apiKey: googleKey,
+            //     language: wwLib.wwLang.lang,
+            // });
+            // const mapOptions = {
+            //     center: {
+            //         lat: parseFloat(lat),
+            //         lng: parseFloat(lng),
+            //     },
+            //     zoom: zoom,
+            //     styles: stylesConfig[`${this.content.mapStyle}`],
+            // };
+            // this.loader
+            //     .load()
+            //     .then(() => {
+            //         this.googleMapInstance = new google.maps.Map(this.$refs.map, mapOptions);
+            //     })
+            //     .catch(err => {
+            //         wwLib.wwLog.error(err);
+            //     });
             // if (this.markers && this.markers.length) {
             //     this.addMarkers();
             // }
