@@ -194,7 +194,6 @@ export default {
         },
     },
     mounted() {
-        this.loaderClass = Loader.google.maps.plugins.loader.Loader;
         this.initMap();
     },
 };
