@@ -6,8 +6,8 @@
     },
     "editor": {
         "label": {
-            "fr": "ww-map",
-            "en": "ww-map"
+            "fr": "Map",
+            "en": "Map"
         },
         "styleOptions": {
             "mapStyle": {
