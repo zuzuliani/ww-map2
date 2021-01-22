@@ -1,7 +1,7 @@
 <template>
     <div class="ww-map">
         <div class="map-container">
-            <div class="map-placeholder" v-if="isError" :class="{ error: isError }">
+            <!-- <div class="map-placeholder" v-if="isError" :class="{ error: isError }">
                 <div class="placeholder-content">
                     If you want to use a Google map, you need to have a Google API Key. If you already have one, you can
                     add it in the map settings. <br /><br />
@@ -12,7 +12,7 @@
                     <span v-if="wrongKey" class="wrongKey">Your API key has the wrong format</span>
                 </div>
             </div>
-            <div class="map" ref="map" :class="{ error: isError }"></div>
+            <div class="map" ref="map" :class="{ error: isError }"></div> -->
         </div>
     </div>
 </template>
@@ -60,22 +60,25 @@ export default {
         initialMarker: false,
     },
     computed: {
-        isEditing() {
-            // eslint-disable-next-line no-unreachable
-            return false;
-        },
-        isError() {
-            if (this.content && this.content.googleKey) {
-                return !this.isGoogleKeyMatch;
-            }
-            return true;
-        },
-        isGoogleKeyMatch() {
-            if (this.content.googleKey) {
-                return this.content.googleKey.match(/^(AIza[0-9A-Za-z-_]{35})$/);
-            }
-            return false;
-        },
+        // isEditing() {
+        //     /* wwEditor:start */
+        //     return this.wwEditorState.editMode === wwLib.wwSectionHelper.EDIT_MODES.CONTENT;
+        //     /* wwEditor:end */
+        //     // eslint-disable-next-line no-unreachable
+        //     return false;
+        // },
+        // isError() {
+        //     if (this.content && this.content.googleKey) {
+        //         return !this.isGoogleKeyMatch;
+        //     }
+        //     return true;
+        // },
+        // isGoogleKeyMatch() {
+        //     if (this.content.googleKey) {
+        //         return this.content.googleKey.match(/^(AIza[0-9A-Za-z-_]{35})$/);
+        //     }
+        //     return false;
+        // },
     },
     watch: {
         'content.googleKey'() {
