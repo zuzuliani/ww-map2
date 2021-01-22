@@ -84,24 +84,24 @@ export default {
         },
     },
     watch: {
-        'content.googleKey'() {
-            this.initMap();
-        },
-        'content.lat'() {
-            this.initMap();
-        },
-        'content.lng'() {
-            this.initMap();
-        },
-        'content.zoom'() {
-            this.initMap();
-        },
-        'content.mapsRand'() {
-            this.initMap();
-        },
-        'content.mapStyle'() {
-            this.initMap();
-        },
+        // 'content.googleKey'() {
+        //     this.initMap();
+        // },
+        // 'content.lat'() {
+        //     this.initMap();
+        // },
+        // 'content.lng'() {
+        //     this.initMap();
+        // },
+        // 'content.zoom'() {
+        //     this.initMap();
+        // },
+        // 'content.mapsRand'() {
+        //     this.initMap();
+        // },
+        // 'content.mapStyle'() {
+        //     this.initMap();
+        // },
     },
     methods: {
         initMap() {
