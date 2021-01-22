@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { Loader } from './googleLoader';
+// import { Loader } from './googleLoader';
 /* wwEditor:start */
 import { addMarkers } from './popups';
 /* wwEditor:end */
