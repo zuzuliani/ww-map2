@@ -61,9 +61,6 @@ export default {
     },
     computed: {
         isEditing() {
-            /* wwEditor:start */
-            return this.wwEditorState.editMode === wwLib.wwSectionHelper.EDIT_MODES.CONTENT;
-            /* wwEditor:end */
             // eslint-disable-next-line no-unreachable
             return false;
         },
