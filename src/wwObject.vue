@@ -112,7 +112,7 @@ export default {
             this.wrongKey = false;
             if (!lat || !lng || !zoom || !googleKey.length) return;
             if (this.loader) {
-                // this.loader.reset();
+                this.loader.reset();
             }
             this.loader = new Loader({
                 apiKey: googleKey,
