@@ -25,12 +25,12 @@
 // import stylesConfig from './stylesConfig.json';
 
 export default {
-    name: '__COMPONENT_NAME__',
+    // name: '__COMPONENT_NAME__',
     props: {
         /* wwEditor:start */
-        wwEditorState: Boolean,
+        // wwEditorState: Boolean,
         /* wwEditor:end */
-        content: Object,
+        // content: Object,
     },
     data() {
         return {

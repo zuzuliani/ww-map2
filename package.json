@@ -4,7 +4,7 @@
     "repository": {
         "url": "https://github.com/weweb-assets/ww-map"
     },
-    "version": "2.0.7",
+    "version": "2.0.8",
     "scripts": {
         "build": "weweb build",
         "serve": "weweb serve"
