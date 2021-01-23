@@ -34,70 +34,70 @@ export default {
     },
     data() {
         return {
-            markerInstances: [],
-            markers: [
-                {
-                    name: 'Paris',
-                    lat: '48.859923',
-                    lng: '2.344065',
-                    isActive: true,
-                },
-            ],
-            loader: null,
-            google: null,
-            wrongKey: false,
-            loaderClass: null,
+            // markerInstances: [],
+            // markers: [
+            //     {
+            //         name: 'Paris',
+            //         lat: '48.859923',
+            //         lng: '2.344065',
+            //         isActive: true,
+            //     },
+            // ],
+            // loader: null,
+            // google: null,
+            // wrongKey: false,
+            // loaderClass: null,
         };
     },
     wwDefaultContent: {
-        googleKey: '',
-        lat: '48.859923',
-        lng: '2.344065',
-        zoom: 15,
-        mapsRand: Math.floor(Math.random() * 1000000000),
-        mapStyle: 'dark',
-        initialMarker: false,
+        // googleKey: '',
+        // lat: '48.859923',
+        // lng: '2.344065',
+        // zoom: 15,
+        // mapsRand: Math.floor(Math.random() * 1000000000),
+        // mapStyle: 'dark',
+        // initialMarker: false,
     },
     computed: {
-        isEditing() {
-            /* wwEditor:start */
-            return this.wwEditorState.editMode === wwLib.wwSectionHelper.EDIT_MODES.CONTENT;
-            /* wwEditor:end */
-            // eslint-disable-next-line no-unreachable
-            return false;
-        },
-        isError() {
-            if (this.content && this.content.googleKey) {
-                return !this.isGoogleKeyMatch;
-            }
-            return true;
-        },
-        isGoogleKeyMatch() {
-            if (this.content.googleKey) {
-                return this.content.googleKey.match(/^(AIza[0-9A-Za-z-_]{35})$/);
-            }
-            return false;
-        },
+        // isEditing() {
+        //     /* wwEditor:start */
+        //     return this.wwEditorState.editMode === wwLib.wwSectionHelper.EDIT_MODES.CONTENT;
+        //     /* wwEditor:end */
+        //     // eslint-disable-next-line no-unreachable
+        //     return false;
+        // },
+        // isError() {
+        //     if (this.content && this.content.googleKey) {
+        //         return !this.isGoogleKeyMatch;
+        //     }
+        //     return true;
+        // },
+        // isGoogleKeyMatch() {
+        //     if (this.content.googleKey) {
+        //         return this.content.googleKey.match(/^(AIza[0-9A-Za-z-_]{35})$/);
+        //     }
+        //     return false;
+        // },
     },
     watch: {
-        'content.googleKey'() {
-            this.initMap();
-        },
-        'content.lat'() {
-            this.initMap();
-        },
-        'content.lng'() {
-            this.initMap();
-        },
-        'content.zoom'() {
-            this.initMap();
-        },
-        'content.mapsRand'() {
-            this.initMap();
-        },
-        'content.mapStyle'() {
-            this.initMap();
-        },
+        // 'content.googleKey'() {
+        //     this.initMap();
+        // },
+        // 'content.lat'() {
+        //     this.initMap();
+        // },
+        // 'content.lng'() {
+        //     this.initMap();
+        // },
+        // 'content.zoom'() {
+        //     this.initMap();
+        // },
+        // 'content.mapsRand'() {
+        //     this.initMap();
+        // },
+        // 'content.mapStyle'() {
+        //     this.initMap();
+        // },
     },
     methods: {
         initMap() {
@@ -139,17 +139,17 @@ export default {
             // }
         },
         async openMarkersPopup() {
-            try {
-                const result = await addMarkers({
-                    markers: this.markers,
-                });
-                if (result.markers && result.markers.length) {
-                    this.markers = result.markers;
-                    this.addMarkers();
-                }
-            } catch (err) {
-                wwLib.wwLog.error(err);
-            }
+            // try {
+            //     const result = await addMarkers({
+            //         markers: this.markers,
+            //     });
+            //     if (result.markers && result.markers.length) {
+            //         this.markers = result.markers;
+            //         this.addMarkers();
+            //     }
+            // } catch (err) {
+            //     wwLib.wwLog.error(err);
+            // }
         },
         addMarkers() {
             // if (this.markerInstances.length > 0) {
