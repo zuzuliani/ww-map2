@@ -74,9 +74,9 @@ export default {
             return true;
         },
         isGoogleKeyMatch() {
-            if (this.content.googleKey) {
-                return this.content.googleKey.match(/^(AIza[0-9A-Za-z-_]{35})$/);
-            }
+            // if (this.content.googleKey) {
+            //     return this.content.googleKey.match(/^(AIza[0-9A-Za-z-_]{35})$/);
+            // }
             return false;
         },
     },
