@@ -124,9 +124,9 @@ class Loader {
             return Loader.instance;
         }
         Loader.instance = this;
-        this.reset = () => {
-            Loader.instance = null;
-        };
+        // this.reset = () => {
+        //     Loader.instance = null;
+        // };
     }
 
     get options() {
