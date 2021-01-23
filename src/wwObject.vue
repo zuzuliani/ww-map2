@@ -1,7 +1,7 @@
 <template>
     <div class="ww-map">
         <div class="map-container">
-            <div class="map-placeholder" v-if="isError" :class="{ error: isError }">
+            <!-- <div class="map-placeholder" v-if="isError" :class="{ error: isError }">
                 <div class="placeholder-content">
                     If you want to use a Google map, you need to have a Google API Key. If you already have one, you can
                     add it in the map settings. <br /><br />
@@ -12,7 +12,7 @@
                     <span v-if="wrongKey" class="wrongKey">Your API key has the wrong format</span>
                 </div>
             </div>
-            <div class="map" ref="map" :class="{ error: isError }"></div>
+            <div class="map" ref="map" :class="{ error: isError }"></div> -->
         </div>
     </div>
 </template>
@@ -20,9 +20,9 @@
 <script>
 // import { Loader } from './googleLoader';
 /* wwEditor:start */
-import { addMarkers } from './popups';
+// import { addMarkers } from './popups';
 /* wwEditor:end */
-import stylesConfig from './stylesConfig.json';
+// import stylesConfig from './stylesConfig.json';
 
 export default {
     name: '__COMPONENT_NAME__',
