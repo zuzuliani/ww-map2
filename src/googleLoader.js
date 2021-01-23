@@ -210,31 +210,31 @@ class Loader {
     /**
      * Set the script on document.
      */
-    setScript() {
-        if (document.getElementById(this.id)) {
-            // TODO wrap onerror callback for cases where the script was loaded elsewhere
-            this.callback();
-            return;
-        }
-        const url = this.createUrl();
-        const script = document.createElement('script');
-        script.id = this.id;
-        script.type = 'text/javascript';
-        script.src = url;
-        script.onerror = this.loadErrorCallback.bind(this);
-        script.defer = true;
-        script.async = true;
-        if (this.nonce) {
-            script.nonce = this.nonce;
-        }
-        document.head.appendChild(script);
-    }
-    deleteScript() {
-        const script = document.getElementById(this.id);
-        if (script) {
-            script.remove();
-        }
-    }
+    // setScript() {
+    //     if (document.getElementById(this.id)) {
+    //         // TODO wrap onerror callback for cases where the script was loaded elsewhere
+    //         this.callback();
+    //         return;
+    //     }
+    //     const url = this.createUrl();
+    //     const script = document.createElement('script');
+    //     script.id = this.id;
+    //     script.type = 'text/javascript';
+    //     script.src = url;
+    //     script.onerror = this.loadErrorCallback.bind(this);
+    //     script.defer = true;
+    //     script.async = true;
+    //     if (this.nonce) {
+    //         script.nonce = this.nonce;
+    //     }
+    //     document.head.appendChild(script);
+    // }
+    // deleteScript() {
+    //     const script = document.getElementById(this.id);
+    //     if (script) {
+    //         script.remove();
+    //     }
+    // }
     // resetIfRetryingFailed() {
     //     const possibleAttempts = this.retries + 1;
     //     if (this.done && !this.loading && this.errors.length >= possibleAttempts) {
