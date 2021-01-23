@@ -235,59 +235,59 @@ class Loader {
             script.remove();
         }
     }
-    resetIfRetryingFailed() {
-        const possibleAttempts = this.retries + 1;
-        if (this.done && !this.loading && this.errors.length >= possibleAttempts) {
-            this.deleteScript();
-            this.done = false;
-            this.loading = false;
-            this.errors = [];
-        }
-    }
-    loadErrorCallback(e) {
-        this.errors.push(e);
-        if (this.errors.length <= this.retries) {
-            const delay = this.errors.length * Math.pow(2, this.errors.length);
-            console.log(`Failed to load Google Maps script, retrying in ${delay} ms.`);
-            setTimeout(() => {
-                this.deleteScript();
-                this.setScript();
-            }, delay);
-        } else {
-            this.onerrorEvent = e;
-            this.callback();
-        }
-    }
-    setCallback() {
-        window.__googleMapsCallback = this.callback.bind(this);
-    }
-    callback() {
-        this.done = true;
-        this.loading = false;
-        this.callbacks.forEach(cb => {
-            cb(this.onerrorEvent);
-        });
-        this.callbacks = [];
-    }
-    execute() {
-        if (window.google && window.google.maps && window.google.maps.version) {
-            this.deleteScript();
-            // console.warn("Aborted attempt to load Google Maps JS with @googlemaps/js-api-loader." +
-            //     "This may result in undesirable behavior as script parameters may not match.");
-            // this.callback();
-        }
-        this.resetIfRetryingFailed();
-        if (this.done) {
-            this.callback();
-        } else {
-            if (this.loading);
-            else {
-                this.loading = true;
-                this.setCallback();
-                this.setScript();
-            }
-        }
-    }
+    // resetIfRetryingFailed() {
+    //     const possibleAttempts = this.retries + 1;
+    //     if (this.done && !this.loading && this.errors.length >= possibleAttempts) {
+    //         this.deleteScript();
+    //         this.done = false;
+    //         this.loading = false;
+    //         this.errors = [];
+    //     }
+    // }
+    // loadErrorCallback(e) {
+    //     this.errors.push(e);
+    //     if (this.errors.length <= this.retries) {
+    //         const delay = this.errors.length * Math.pow(2, this.errors.length);
+    //         console.log(`Failed to load Google Maps script, retrying in ${delay} ms.`);
+    //         setTimeout(() => {
+    //             this.deleteScript();
+    //             this.setScript();
+    //         }, delay);
+    //     } else {
+    //         this.onerrorEvent = e;
+    //         this.callback();
+    //     }
+    // }
+    // setCallback() {
+    //     window.__googleMapsCallback = this.callback.bind(this);
+    // }
+    // callback() {
+    //     this.done = true;
+    //     this.loading = false;
+    //     this.callbacks.forEach(cb => {
+    //         cb(this.onerrorEvent);
+    //     });
+    //     this.callbacks = [];
+    // }
+    // execute() {
+    //     if (window.google && window.google.maps && window.google.maps.version) {
+    //         this.deleteScript();
+    //         // console.warn("Aborted attempt to load Google Maps JS with @googlemaps/js-api-loader." +
+    //         //     "This may result in undesirable behavior as script parameters may not match.");
+    //         // this.callback();
+    //     }
+    //     this.resetIfRetryingFailed();
+    //     if (this.done) {
+    //         this.callback();
+    //     } else {
+    //         if (this.loading);
+    //         else {
+    //             this.loading = true;
+    //             this.setCallback();
+    //             this.setScript();
+    //         }
+    //     }
+    // }
 }
 
 export { DEFAULT_ID, Loader };
