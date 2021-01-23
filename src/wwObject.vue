@@ -152,13 +152,13 @@ export default {
             }
         },
         addMarkers() {
-            if (this.markerInstances.length > 0) {
-                for (let markerInstance of this.markerInstances) {
-                    markerInstance.setMap(null);
-                    markerInstance = null;
-                }
-                this.markerInstances = [];
-            }
+            // if (this.markerInstances.length > 0) {
+            //     for (let markerInstance of this.markerInstances) {
+            //         markerInstance.setMap(null);
+            //         markerInstance = null;
+            //     }
+            //     this.markerInstances = [];
+            // }
             if (this.loader) {
                 for (let marker of this.markers) {
                     this.loader
