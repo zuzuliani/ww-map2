@@ -159,37 +159,37 @@ export default {
             //     }
             //     this.markerInstances = [];
             // }
-            if (this.loader) {
-                for (let marker of this.markers) {
-                    this.loader
-                        .load()
-                        .then(() => {
-                            if (!marker.isActive) return;
-                            const latlng = { lat: parseFloat(marker.lat), lng: parseFloat(marker.lng) };
-                            let _marker = new google.maps.Marker({
-                                position: latlng,
-                                map: this.googleMapInstance,
-                                animation: google.maps.Animation.DROP,
-                            });
-                            this.markerInstances.push(_marker);
-                            if (marker.name) {
-                                const infowindow = new google.maps.InfoWindow({
-                                    content: marker.name,
-                                    maxWidth: 200,
-                                });
-                                _marker.addListener('mouseover', function () {
-                                    infowindow.open(this.googleMapInstance, _marker);
-                                });
-                                _marker.addListener('mouseout', function () {
-                                    infowindow.close();
-                                });
-                            }
-                        })
-                        .catch(err => {
-                            wwLib.wwLog.error(err);
-                        });
-                }
-            }
+            // if (this.loader) {
+            //     for (let marker of this.markers) {
+            //         this.loader
+            //             .load()
+            //             .then(() => {
+            //                 if (!marker.isActive) return;
+            //                 const latlng = { lat: parseFloat(marker.lat), lng: parseFloat(marker.lng) };
+            //                 let _marker = new google.maps.Marker({
+            //                     position: latlng,
+            //                     map: this.googleMapInstance,
+            //                     animation: google.maps.Animation.DROP,
+            //                 });
+            //                 this.markerInstances.push(_marker);
+            //                 if (marker.name) {
+            //                     const infowindow = new google.maps.InfoWindow({
+            //                         content: marker.name,
+            //                         maxWidth: 200,
+            //                     });
+            //                     _marker.addListener('mouseover', function () {
+            //                         infowindow.open(this.googleMapInstance, _marker);
+            //                     });
+            //                     _marker.addListener('mouseout', function () {
+            //                         infowindow.close();
+            //                     });
+            //                 }
+            //             })
+            //             .catch(err => {
+            //                 wwLib.wwLog.error(err);
+            //             });
+            //     }
+            // }
         },
     },
     mounted() {
