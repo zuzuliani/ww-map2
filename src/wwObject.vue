@@ -23,7 +23,7 @@
 /* wwEditor:start */
 import { addMarkers } from './popups';
 /* wwEditor:end */
-import stylesConfig from './stylesConfig.json';
+// import stylesConfig from './stylesConfig.json';
 
 export default {
     name: '__COMPONENT_NAME__',
@@ -35,30 +35,29 @@ export default {
     },
     data() {
         return {
-            markerInstances: [],
-            markers: [
-                {
-                    name: 'Paris',
-                    lat: '48.859923',
-                    lng: '2.344065',
-                    isActive: true,
-                },
-            ],
-
-            loader: null,
-            google: null,
-            wrongKey: false,
-            loaderClass: null,
+            // markerInstances: [],
+            // markers: [
+            //     {
+            //         name: 'Paris',
+            //         lat: '48.859923',
+            //         lng: '2.344065',
+            //         isActive: true,
+            //     },
+            // ],
+            // loader: null,
+            // google: null,
+            // wrongKey: false,
+            // loaderClass: null,
         };
     },
     wwDefaultContent: {
-        googleKey: '',
-        lat: '48.859923',
-        lng: '2.344065',
-        zoom: 15,
-        mapsRand: Math.floor(Math.random() * 1000000000),
-        mapStyle: 'dark',
-        initialMarker: false,
+        // googleKey: '',
+        // lat: '48.859923',
+        // lng: '2.344065',
+        // zoom: 15,
+        // mapsRand: Math.floor(Math.random() * 1000000000),
+        // mapStyle: 'dark',
+        // initialMarker: false,
     },
     computed: {
         // isEditing() {
@@ -103,7 +102,7 @@ export default {
     },
     methods: {
         initMap() {
-            const { lat, lng, zoom, googleKey } = this.content;
+            // const { lat, lng, zoom, googleKey } = this.content;
             // if (!this.isGoogleKeyMatch) {
             //     if (googleKey && googleKey.length) this.wrongKey = true;
             //     setTimeout(() => {
@@ -116,26 +115,26 @@ export default {
             // if (this.loader) {
             //     this.loader.reset();
             // }
-            this.loader = new Loader({
-                apiKey: googleKey,
-                language: wwLib.wwLang.lang,
-            });
-            const mapOptions = {
-                center: {
-                    lat: parseFloat(lat),
-                    lng: parseFloat(lng),
-                },
-                zoom: zoom,
-                styles: stylesConfig[`${this.content.mapStyle}`],
-            };
-            this.loader
-                .load()
-                .then(() => {
-                    this.googleMapInstance = new google.maps.Map(this.$refs.map, mapOptions);
-                })
-                .catch(err => {
-                    wwLib.wwLog.error(err);
-                });
+            // this.loader = new Loader({
+            //     apiKey: googleKey,
+            //     language: wwLib.wwLang.lang,
+            // });
+            // const mapOptions = {
+            //     center: {
+            //         lat: parseFloat(lat),
+            //         lng: parseFloat(lng),
+            //     },
+            //     zoom: zoom,
+            //     styles: stylesConfig[`${this.content.mapStyle}`],
+            // };
+            // this.loader
+            //     .load()
+            //     .then(() => {
+            //         this.googleMapInstance = new google.maps.Map(this.$refs.map, mapOptions);
+            //     })
+            //     .catch(err => {
+            //         wwLib.wwLog.error(err);
+            //     });
             // if (this.markers && this.markers.length) {
             //     this.addMarkers();
             // }
@@ -195,7 +194,7 @@ export default {
         // },
     },
     mounted() {
-        this.initMap();
+        // this.initMap();
     },
 };
 </script>
