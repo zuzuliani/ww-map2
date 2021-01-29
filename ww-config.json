@@ -1,31 +1,77 @@
 {
-    "componentPath": "./src/wwObjectMap.vue",
-    "content": {
-        "type": "ww-map",
-        "data": {}
+    "componentPath": "./src/wwObject.vue",
+    "type": "wwObject",
+    "options": {
+        "sizable": true
     },
-    "upsales": {
-        "wwAnalytics": {
-            "click": false
-        }
-    },
-    "cmsOptions": {
-        "wwObjectHover": {
-            "pointerEvents": true
+    "editor": {
+        "label": {
+            "fr": "Map",
+            "en": "Map"
         },
-        "wwObjectMenu": {
-            "items": [
-                {
-                    "name": "OPTIONS",
-                    "main": true,
-                    "text": {
-                        "en": "Options",
-                        "fr": "Options"
-                    },
-                    "icon": "wwi wwi-edit-other",
-                    "action": "edit"
+        "styleOptions": {
+            "mapStyle": {
+                "label": {
+                    "en": "Map style",
+                    "fr": "Style de la map"
+                },
+                "type": "TextSelect",
+                "options": {
+                    "options": [
+                        { "value": null, "label": "Standard" },
+                        { "value": "silver", "label": "Silver" },
+                        { "value": "retro", "label": "Retro" },
+                        { "value": "dark", "label": "Dark" },
+                        { "value": "night", "label": "Night" },
+                        { "value": "aubergine", "label": "Aubergine" }
+                    ]
+                },
+                "path": "mapStyle"
+            }
+        },
+        "settingsOptions": {
+            "key": {
+                "path": "googleKey",
+                "label": { "en": "Google key", "fr": "Clé Google" },
+                "type": "Text",
+                "options": {
+                    "placeholder": "Google API key"
                 }
-            ]
+            },
+            "lat": {
+                "path": "lat",
+                "label": { "en": "Latitude origin", "fr": "Origine - Latitude" },
+                "type": "Text",
+                "options": {
+                    "placeholder": "Latitude"
+                }
+            },
+            "lng": {
+                "path": "lng",
+                "label": { "en": "Longitude origin", "fr": "Origine - Longitude" },
+                "type": "Text",
+                "options": {
+                    "placeholder": "Longitude"
+                }
+            },
+            "zoom": {
+                "path": "zoom",
+                "type": "Number",
+                "label": { "en": "Zoom", "fr": "Zoom" },
+                "options": {
+                    "min": 0,
+                    "max": 20,
+                    "step": 1
+                }
+            },
+            "addMarker": {
+                "type": "Button",
+                "options": {
+                    "text": { "en": "Markers", "fr": "Marqueurs" },
+                    "color": "blue",
+                    "action": "openMarkersPopup"
+                }
+            }
         }
     }
 }
