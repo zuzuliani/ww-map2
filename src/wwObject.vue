@@ -5,7 +5,7 @@
                 <div class="placeholder-content">
                     If you want to use a Google map, you need to have a Google API Key. If you already have one, you can
                     add it in the map settings. <br /><br />
-                    Otherwise you can follow theses instructions :
+                    Otherwise you can follow theses instructions:
                     <a href="https://developers.google.com/maps/documentation/javascript/get-api-key" target="_blank">
                         <button>API Key documentation</button></a
                     >
@@ -33,6 +33,7 @@ export default {
     },
     data() {
         return {
+            googleMapInstance: null,
             markerInstances: [],
             markers: [
                 {
@@ -133,6 +134,7 @@ export default {
                 .catch(err => {
                     wwLib.wwLog.error(err);
                 });
+
             if (this.markers && this.markers.length) {
                 this.addMarkers();
             }

@@ -128,7 +128,6 @@ class Loader {
             Loader.instance = null;
         };
     }
-
     get options() {
         return {
             version: this.version,
@@ -204,7 +203,7 @@ class Loader {
      * Load the Google Maps JavaScript API script with a callback.
      */
     loadCallback(fn) {
-        // this.callbacks.push(fn);
+        this.callbacks.push(fn);
         this.execute();
     }
     /**
@@ -271,10 +270,11 @@ class Loader {
     }
     execute() {
         if (window.google && window.google.maps && window.google.maps.version) {
-            this.deleteScript();
-            // console.warn("Aborted attempt to load Google Maps JS with @googlemaps/js-api-loader." +
-            //     "This may result in undesirable behavior as script parameters may not match.");
-            // this.callback();
+            // console.warn(
+            //     'Aborted attempt to load Google Maps JS with @googlemaps/js-api-loader.' +
+            //       'This may result in undesirable behavior as script parameters may not match.');
+            // );
+            this.callback();
         }
         this.resetIfRetryingFailed();
         if (this.done) {
