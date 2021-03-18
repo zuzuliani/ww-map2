@@ -27,7 +27,7 @@ import stylesConfig from './stylesConfig.json';
 export default {
     props: {
         /* wwEditor:start */
-        wwEditorState: Boolean,
+        wwEditorState: Object,
         /* wwEditor:end */
         content: Object,
     },
