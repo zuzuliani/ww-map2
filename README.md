@@ -1,10 +1,6 @@
-# WW-IMAGE
+# WW-MAP
 
-This is an element for Weweb, to display an image.
-
--   Source of image can be change, and will be download on Weweb CDN.
--   Focuspoint can be change
--   Alt can be change
+This is an element for Weweb, to display an google map.
 
 ## Installation
 
