@@ -35,14 +35,7 @@ export default {
         return {
             googleMapInstance: null,
             markerInstances: [],
-            markers: [
-                {
-                    name: 'Paris',
-                    lat: '48.859923',
-                    lng: '2.344065',
-                    isActive: true,
-                },
-            ],
+
             loader: null,
             google: null,
             wrongKey: false,
@@ -57,6 +50,14 @@ export default {
         mapsRand: Math.floor(Math.random() * 1000000000),
         mapStyle: 'dark',
         initialMarker: false,
+        markers: [
+            {
+                name: 'Paris',
+                lat: '48.859923',
+                lng: '2.344065',
+                isActive: true,
+            },
+        ],
     },
     computed: {
         isEditing() {
@@ -135,17 +136,17 @@ export default {
                     wwLib.wwLog.error(err);
                 });
 
-            if (this.markers && this.markers.length) {
+            if (this.content.markers && this.content.markers.length) {
                 this.addMarkers();
             }
         },
         async openMarkersPopup() {
             try {
                 const result = await addMarkers({
-                    markers: this.markers,
+                    markers: this.content.markers,
                 });
                 if (result.markers && result.markers.length) {
-                    this.markers = result.markers;
+                    this.$emit('update', { markers: result.markers });
                     this.addMarkers();
                 }
             } catch (err) {
@@ -161,7 +162,7 @@ export default {
                 this.markerInstances = [];
             }
             if (this.loader) {
-                for (let marker of this.markers) {
+                for (let marker of this.content.markers) {
                     this.loader
                         .load()
                         .then(() => {
