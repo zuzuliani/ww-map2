@@ -105,7 +105,7 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .ww-markers-popup {
     .markers-wrapper {
         width: 100%;
