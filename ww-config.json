@@ -1,6 +1,5 @@
 {
-    "componentPath": "./src/wwObject.vue",
-    "type": "wwObject",
+    "componentPath": "./src/wwElement.vue",
     "options": {
         "sizable": true
     },

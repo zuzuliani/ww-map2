@@ -1,18 +1,18 @@
 <template>
     <div class="ww-map">
         <div class="map-container">
-            <div class="map-placeholder" v-if="isError" :class="{ error: isError }">
+            <div v-if="isError" class="map-placeholder" :class="{ error: isError }">
                 <div class="placeholder-content">
                     If you want to use a Google map, you need to have a Google API Key. If you already have one, you can
                     add it in the map settings. <br /><br />
                     Otherwise you can follow theses instructions:
                     <a href="https://developers.google.com/maps/documentation/javascript/get-api-key" target="_blank">
-                        <button>API Key documentation</button></a
-                    >
+                        <button>API Key documentation</button>
+                    </a>
                     <span v-if="wrongKey" class="wrongKey">Your API key has the wrong format</span>
                 </div>
             </div>
-            <div class="map" ref="map" :class="{ error: isError }"></div>
+            <div ref="map" class="map" :class="{ error: isError }"></div>
         </div>
     </div>
 </template>
@@ -27,21 +27,11 @@ import stylesConfig from './stylesConfig.json';
 export default {
     props: {
         /* wwEditor:start */
-        wwEditorState: Object,
+        wwEditorState: { type: Object, required: true },
         /* wwEditor:end */
-        content: Object,
+        content: { type: Object, required: true },
     },
-    data() {
-        return {
-            googleMapInstance: null,
-            markerInstances: [],
-
-            loader: null,
-            google: null,
-            wrongKey: false,
-            loaderClass: null,
-        };
-    },
+    emits: ['update:content'],
     wwDefaultContent: {
         googleKey: '',
         lat: '48.859923',
@@ -59,10 +49,20 @@ export default {
             },
         ],
     },
+    data() {
+        return {
+            googleMapInstance: null,
+            markerInstances: [],
+            loader: null,
+            google: null,
+            wrongKey: false,
+            loaderClass: null,
+        };
+    },
     computed: {
         isEditing() {
             /* wwEditor:start */
-            return this.wwEditorState.editMode === wwLib.wwSectionHelper.EDIT_MODES.CONTENT;
+            return this.wwEditorState.editMode === wwLib.wwEditorHelper.EDIT_MODES.EDITION;
             /* wwEditor:end */
             // eslint-disable-next-line no-unreachable
             return false;
@@ -99,6 +99,9 @@ export default {
         'content.mapStyle'() {
             this.initMap();
         },
+    },
+    mounted() {
+        this.initMap();
     },
     methods: {
         initMap() {
@@ -146,7 +149,7 @@ export default {
                     markers: this.content.markers,
                 });
                 if (result.markers && result.markers.length) {
-                    this.$emit('update', { markers: result.markers });
+                    this.$emit('update:content', { markers: result.markers });
                     this.addMarkers();
                 }
             } catch (err) {
@@ -193,9 +196,6 @@ export default {
                 }
             }
         },
-    },
-    mounted() {
-        this.initMap();
     },
 };
 </script>

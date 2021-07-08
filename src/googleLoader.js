@@ -247,7 +247,7 @@ class Loader {
         this.errors.push(e);
         if (this.errors.length <= this.retries) {
             const delay = this.errors.length * Math.pow(2, this.errors.length);
-            console.log(`Failed to load Google Maps script, retrying in ${delay} ms.`);
+            wwLib.wwLog.error(`Failed to load Google Maps script, retrying in ${delay} ms.`);
             setTimeout(() => {
                 this.deleteScript();
                 this.setScript();
