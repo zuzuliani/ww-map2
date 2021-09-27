@@ -32,23 +32,6 @@ export default {
         content: { type: Object, required: true },
     },
     emits: ['update:content'],
-    wwDefaultContent: {
-        googleKey: '',
-        lat: '48.859923',
-        lng: '2.344065',
-        zoom: 15,
-        mapsRand: Math.floor(Math.random() * 1000000000),
-        mapStyle: 'dark',
-        initialMarker: false,
-        markers: [
-            {
-                name: 'Paris',
-                lat: '48.859923',
-                lng: '2.344065',
-                isActive: true,
-            },
-        ],
-    },
     data() {
         return {
             googleMapInstance: null,
