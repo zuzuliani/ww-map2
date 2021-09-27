@@ -7,50 +7,7 @@ export default {
             "fr": "Map",
             "en": "Map"
         },
-        "settingsOptions": {
-            "key": {
-                "path": "googleKey",
-                "label": { "en": "Google key", "fr": "Clé Google" },
-                "type": "Text",
-                "options": {
-                    "placeholder": "Google API key"
-                }
-            },
-            "lat": {
-                "path": "lat",
-                "label": { "en": "Latitude origin", "fr": "Origine - Latitude" },
-                "type": "Text",
-                "options": {
-                    "placeholder": "Latitude"
-                }
-            },
-            "lng": {
-                "path": "lng",
-                "label": { "en": "Longitude origin", "fr": "Origine - Longitude" },
-                "type": "Text",
-                "options": {
-                    "placeholder": "Longitude"
-                }
-            },
-            "zoom": {
-                "path": "zoom",
-                "type": "Number",
-                "label": { "en": "Zoom", "fr": "Zoom" },
-                "options": {
-                    "min": 0,
-                    "max": 20,
-                    "step": 1
-                }
-            },
-            "addMarker": {
-                "type": "Button",
-                "options": {
-                    "text": { "en": "Markers", "fr": "Marqueurs" },
-                    "color": "blue",
-                    "action": "openMarkersPopup"
-                }
-            }
-        }
+        icon: 'tracking'
     },
     properties: {
         "mapStyle": {
