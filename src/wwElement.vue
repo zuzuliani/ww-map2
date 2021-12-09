@@ -82,6 +82,9 @@ export default {
         'content.mapStyle'() {
             this.initMap();
         },
+        'content.defaultMapType'() {
+            this.initMap();
+        },
     },
     mounted() {
         this.initMap();
@@ -112,6 +115,7 @@ export default {
                 },
                 zoom: zoom,
                 styles: stylesConfig[`${this.content.mapStyle}`],
+                mapTypeId: this.content.defaultMapType
             };
             this.loader
                 .load()

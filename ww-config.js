@@ -28,6 +28,22 @@ export default {
             },
             defaultValue: 'dark',
         },
+        "defaultMapType": {
+            "label": {
+                "en": "Map type",
+                "fr": "Type de map"
+            },
+            "type": "TextSelect",
+            "options": {
+                "options": [
+                    { "value": "roadmap", "label": "Standard" },
+                    { "value": "satellite", "label": "Satellite" },
+                    { "value": "hybrid", "label": "Hybrid" },
+                    { "value": "terrain", "label": "Terrain" },
+                ]
+            },
+            defaultValue: 'roadmap',
+        },
         "googleKey": {
             section: 'settings',
             "label": { "en": "Google key", "fr": "Clé Google" },
