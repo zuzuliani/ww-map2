@@ -139,7 +139,6 @@ export default {
                     this.loader
                         .load()
                         .then(() => {
-                            if (marker && !marker.isActive) return;
                             const latlng = { lat: parseFloat(marker.lat), lng: parseFloat(marker.lng) };
                             let _marker = new google.maps.Marker({
                                 position: latlng,
