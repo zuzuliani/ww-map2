@@ -1,6 +1,6 @@
 <template>
     <div class="ww-markers-popup ww-scroll-bar">
-        <div class="markers-wrapper" v-for="(marker, index) in markers" :key="index">
+        <div v-for="(marker, index) in markers" :key="index" class="markers-wrapper">
             <div class="marker-wrapper">
                 <div class="name input">
                     <label for="name">Name</label> <br />
@@ -35,16 +35,16 @@
             </div>
             <div class="remove-active-marker">
                 <wwManagerRadio
+                    v-model="marker.isActive"
                     class="toggle-marker"
                     :value="true"
-                    v-model="marker.isActive"
                     @change="setResult($event)"
                 ></wwManagerRadio>
                 <wwEditorIcon
-                    @click="removeMarker(index)"
                     class="remove-user-icon"
                     name="delete"
                     :class="{ disabled: lastField }"
+                    @click="removeMarker(index)"
                 />
             </div>
         </div>
@@ -60,7 +60,7 @@
 
 <script>
 export default {
-    name: 'wwHandleMarkers',
+    name: 'WwHandleMarkers',
     props: {
         options: {
             type: Object,
@@ -78,6 +78,10 @@ export default {
         lastField() {
             return this.markers.length < 2;
         },
+    },
+    mounted() {
+        this.markers = this.options.data.options.markers;
+        this.setResult();
     },
     methods: {
         addMarker() {
@@ -97,10 +101,6 @@ export default {
         setResult() {
             this.options.result.markers = this.markers;
         },
-    },
-    mounted() {
-        this.markers = this.options.data.options.markers;
-        this.setResult();
     },
 };
 </script>

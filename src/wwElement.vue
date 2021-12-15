@@ -1,5 +1,5 @@
 <template>
-    <div class="ww-map">
+    <div class="ww-map" :class="{ inactive: isEditing }">
         <div class="map-container">
             <div v-if="isError" class="map-placeholder" :class="{ error: isError }">
                 <div class="placeholder-content">
@@ -19,9 +19,6 @@
 
 <script>
 import { Loader } from './googleLoader';
-/* wwEditor:start */
-import { addMarkers } from './popups';
-/* wwEditor:end */
 import stylesConfig from './stylesConfig.json';
 
 export default {
@@ -64,26 +61,11 @@ export default {
         },
     },
     watch: {
-        'content.googleKey'() {
-            this.initMap();
-        },
-        'content.lat'() {
-            this.initMap();
-        },
-        'content.lng'() {
-            this.initMap();
-        },
-        'content.zoom'() {
-            this.initMap();
-        },
-        'content.mapsRand'() {
-            this.initMap();
-        },
-        'content.mapStyle'() {
-            this.initMap();
-        },
-        'content.defaultMapType'() {
-            this.initMap();
+        content: {
+            handler() {
+                this.initMap();
+            },
+            deep: true,
         },
     },
     mounted() {
@@ -115,7 +97,13 @@ export default {
                 },
                 zoom: zoom,
                 styles: stylesConfig[`${this.content.mapStyle}`],
-                mapTypeId: this.content.defaultMapType
+                mapTypeId: this.content.defaultMapType,
+                zoomControl: this.content.zoomControl,
+                scaleControl: this.content.scaleControl,
+                rotateControl: this.content.rotateControl,
+                streetViewControl: this.content.streetViewControl,
+                fullscreenControl: this.content.fullscreenControl,
+                mapTypeControl: this.content.mapTypeControl,
             };
             this.loader
                 .load()
@@ -127,23 +115,18 @@ export default {
                 });
 
             if (this.content.markers && this.content.markers.length) {
-                this.addMarkers();
-            }
-        },
-        async openMarkersPopup() {
-            try {
-                const result = await addMarkers({
-                    markers: this.content.markers,
-                });
-                if (result.markers && result.markers.length) {
-                    this.$emit('update:content', { markers: result.markers });
+                this.$nextTick(() => {
                     this.addMarkers();
-                }
-            } catch (err) {
-                wwLib.wwLog.error(err);
+                });
             }
         },
         addMarkers() {
+            if (!this.content.markers) return;
+            let data = this.content.markers;
+            if (!Array.isArray(data)) {
+                data = new Array(data);
+            }
+
             if (this.markerInstances.length > 0) {
                 for (let markerInstance of this.markerInstances) {
                     markerInstance.setMap(null);
@@ -151,12 +134,12 @@ export default {
                 }
                 this.markerInstances = [];
             }
-            if (this.loader) {
-                for (let marker of this.content.markers) {
+            if (this.loader && data && data.length) {
+                for (let marker of data) {
                     this.loader
                         .load()
                         .then(() => {
-                            if (!marker.isActive) return;
+                            if (marker && !marker.isActive) return;
                             const latlng = { lat: parseFloat(marker.lat), lng: parseFloat(marker.lng) };
                             let _marker = new google.maps.Marker({
                                 position: latlng,
@@ -194,6 +177,11 @@ export default {
     height: 100%;
     overflow: hidden;
     padding: 20%;
+    pointer-events: initial;
+
+    &.inactive {
+        pointer-events: none;
+    }
 
     .map-container {
         position: absolute;
