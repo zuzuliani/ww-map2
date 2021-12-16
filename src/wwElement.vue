@@ -29,14 +29,17 @@ export default {
         content: { type: Object, required: true },
     },
     emits: ['update:content'],
+    setup() {
+        const markerInstances = [];
+        const mapBounds = null;
+
+        return { markerInstances, mapBounds };
+    },
     data() {
         return {
-            googleMapInstance: null,
-            markerInstances: [],
+            map: null,
             loader: null,
-            google: null,
             wrongKey: false,
-            loaderClass: null,
         };
     },
     computed: {
@@ -59,13 +62,71 @@ export default {
             }
             return false;
         },
+        mapOptions() {
+            return {
+                center: {
+                    lat: parseFloat(this.content.lat),
+                    lng: parseFloat(this.content.lng),
+                },
+                zoom: this.content.zoom,
+                styles: stylesConfig[`${this.content.mapStyle}`],
+                mapTypeId: this.content.defaultMapType,
+                zoomControl: this.content.zoomControl,
+                scaleControl: this.content.scaleControl,
+                rotateControl: this.content.rotateControl,
+                streetViewControl: this.content.streetViewControl,
+                fullscreenControl: this.content.fullscreenControl,
+                mapTypeControl: this.content.mapTypeControl,
+            };
+        },
     },
     watch: {
-        content: {
-            handler() {
+        'content.googleKey'() {
+            this.initMap();
+        },
+        'content.lat'() {
+            this.initMap();
+        },
+        'content.lng'() {
+            this.initMap();
+        },
+        'content.markers'() {
+            this.updateMarkers();
+        },
+        'content.zoom'(value) {
+            if (this.map) this.map.setZoom(value);
+        },
+        'content.mapStyle'() {
+            this.initMap();
+        },
+        'content.defaultMapType'() {
+            this.initMap();
+        },
+        'content.fixedBounds'(fixedBounds) {
+            if (fixedBounds) {
+                this.updateMarkers();
+            } else {
+                this.mapBounds = null;
                 this.initMap();
-            },
-            deep: true,
+            }
+        },
+        'content.zoomControl'() {
+            this.initMap();
+        },
+        'content.scaleControl'() {
+            this.initMap();
+        },
+        'content.rotateControl'() {
+            this.initMap();
+        },
+        'content.streetViewControl'() {
+            this.initMap();
+        },
+        'content.fullscreenControl'() {
+            this.initMap();
+        },
+        'content.mapTypeControl'() {
+            this.initMap();
         },
     },
     mounted() {
@@ -81,6 +142,7 @@ export default {
                 }, 8000);
                 return;
             }
+
             this.wrongKey = false;
             if (!lat || !lng || !zoom || !googleKey.length) return;
             if (this.loader) {
@@ -90,51 +152,34 @@ export default {
                 apiKey: googleKey,
                 language: wwLib.wwLang.lang,
             });
-            const mapOptions = {
-                center: {
-                    lat: parseFloat(lat),
-                    lng: parseFloat(lng),
-                },
-                zoom: zoom,
-                styles: stylesConfig[`${this.content.mapStyle}`],
-                mapTypeId: this.content.defaultMapType,
-                zoomControl: this.content.zoomControl,
-                scaleControl: this.content.scaleControl,
-                rotateControl: this.content.rotateControl,
-                streetViewControl: this.content.streetViewControl,
-                fullscreenControl: this.content.fullscreenControl,
-                mapTypeControl: this.content.mapTypeControl,
-            };
+
             this.loader
                 .load()
                 .then(() => {
-                    this.googleMapInstance = new google.maps.Map(this.$refs.map, mapOptions);
+                    this.map = new google.maps.Map(this.$refs.map, this.mapOptions);
+                    this.updateMarkers();
                 })
                 .catch(err => {
                     wwLib.wwLog.error(err);
                 });
-
-            if (this.content.markers && this.content.markers.length) {
-                this.$nextTick(() => {
-                    this.addMarkers();
-                });
-            }
         },
-        addMarkers() {
-            if (!this.content.markers) return [{}];
+        updateMarkers() {
+            if (!this.content.markers) return;
             let data = this.content.markers;
-            if (!Array.isArray(data) && typeof data === 'object') {
+
+            if (data && !Array.isArray(data) && typeof data === 'object') {
                 data = new Array(data);
+            } else if ((data && !Array.isArray(data)) || typeof data !== 'object') {
+                return [{}];
             }
 
-            if (this.markerInstances.length > 0) {
+            if (this.loader && data) {
                 for (let markerInstance of this.markerInstances) {
                     markerInstance.setMap(null);
                     markerInstance = null;
                 }
                 this.markerInstances = [];
-            }
-            if (this.loader && data && data.length) {
+
                 for (let marker of data) {
                     this.loader
                         .load()
@@ -142,7 +187,7 @@ export default {
                             const latlng = { lat: parseFloat(marker.lat), lng: parseFloat(marker.lng) };
                             let _marker = new google.maps.Marker({
                                 position: latlng,
-                                map: this.googleMapInstance,
+                                map: this.map,
                                 animation: google.maps.Animation.DROP,
                             });
                             this.markerInstances.push(_marker);
@@ -152,7 +197,7 @@ export default {
                                     maxWidth: 200,
                                 });
                                 _marker.addListener('mouseover', function () {
-                                    infowindow.open(this.googleMapInstance, _marker);
+                                    infowindow.open(this.map, _marker);
                                 });
                                 _marker.addListener('mouseout', function () {
                                     infowindow.close();
@@ -162,6 +207,21 @@ export default {
                         .catch(err => {
                             wwLib.wwLog.error(err);
                         });
+                }
+            }
+
+            if (this.content.fixedBounds) {
+                this.mapBounds = new google.maps.LatLngBounds();
+                for (let marker of data) {
+                    if (typeof marker === 'object' && 'lat' in marker && 'lng' in marker) {
+                        let { lat, lng } = marker;
+                        this.mapBounds.extend({ lat: parseFloat(lat), lng: parseFloat(lng) });
+                    }
+                }
+                this.map.fitBounds(this.mapBounds);
+
+                if (this.map && this.map.getZoom() > this.content.zoom) {
+                    this.map.setZoom(this.content.zoom);
                 }
             }
         },

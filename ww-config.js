@@ -61,7 +61,7 @@ export default {
             options: {
                 placeholder: 'Latitude',
             },
-            defaultValue: '48.859923',
+            defaultValue: '40.712784',
             bindable: true,
         },
         lng: {
@@ -71,7 +71,7 @@ export default {
             options: {
                 placeholder: 'Longitude',
             },
-            defaultValue: '2.344065',
+            defaultValue: '-74.005941',
             bindable: true,
         },
         zoom: {
@@ -115,12 +115,8 @@ export default {
                 },
             },
             defaultValue: [
-                {
-                    name: 'Paris',
-                    lat: '48.859923',
-                    lng: '2.344065',
-                    isActive: true,
-                },
+                { name: 'New York', lat: 40.712784, lng: -74.005941 },
+                { name: 'Brooklin', lat: 40.650002, lng: -73.949997 },
             ],
         },
         zoomControl: {
@@ -158,10 +154,6 @@ export default {
             type: 'OnOff',
             section: 'settings',
             defaultValue: true,
-        },
-        mapsRand: {
-            hidden: true,
-            defaultValue: Math.floor(Math.random() * 1000000000),
         },
     },
 };
