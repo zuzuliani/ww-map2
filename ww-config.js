@@ -52,7 +52,7 @@ export default {
             options: {
                 placeholder: 'Google API key',
             },
-            defaultValue: 'AIzaSyCtcuLlu2_7aP1ZCUI6kAVZY8K4KMJ-BJA',
+            defaultValue: '',
         },
         lat: {
             section: 'settings',

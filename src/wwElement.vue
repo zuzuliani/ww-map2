@@ -121,12 +121,10 @@ export default {
             }
         },
         addMarkers() {
-            if (!this.content.markers) return;
+            if (!this.content.markers) return [{}];
             let data = this.content.markers;
             if (!Array.isArray(data) && typeof data === 'object') {
                 data = new Array(data);
-            } else {
-                return [{}];
             }
 
             if (this.markerInstances.length > 0) {
