@@ -52,7 +52,7 @@ export default {
             options: {
                 placeholder: 'Google API key',
             },
-            defaultValue: '',
+            defaultValue: 'AIzaSyCtcuLlu2_7aP1ZCUI6kAVZY8K4KMJ-BJA',
         },
         lat: {
             section: 'settings',
@@ -83,7 +83,7 @@ export default {
                 max: 20,
                 step: 1,
             },
-            defaultValue: 15,
+            defaultValue: 11,
             bindable: true,
         },
         markers: {
@@ -118,6 +118,12 @@ export default {
                 { name: 'New York', lat: 40.712784, lng: -74.005941 },
                 { name: 'Brooklin', lat: 40.650002, lng: -73.949997 },
             ],
+        },
+        fixedBounds: {
+            label: { en: 'Fixed markers bounds', fr: 'Fixed markers bounds' },
+            type: 'OnOff',
+            section: 'settings',
+            defaultValue: true,
         },
         zoomControl: {
             label: { en: 'Zoom control', fr: 'Zoom control' },
