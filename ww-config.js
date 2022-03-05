@@ -9,6 +9,10 @@ export default {
         },
         icon: 'tracking',
     },
+    triggerEvents: [
+        { name: 'marker:mouseover', label: { en: 'On marker mouse enter' }, event: { value: {} } },
+        { name: 'marker:mouseout', label: { en: 'On marker mouse leave' }, event: { value: {} } },
+    ],
     properties: {
         defaultMapType: {
             label: {
@@ -41,9 +45,18 @@ export default {
                     { value: 'dark', label: 'Dark' },
                     { value: 'night', label: 'Night' },
                     { value: 'aubergine', label: 'Aubergine' },
+                    { value: 'custom', label: 'Custom Import' },
                 ],
             },
             defaultValue: 'dark',
+        },
+        mapStyleJSON: {
+            hidden: content => content.mapStyle !== 'custom' || content.defaultMapType === 'satellite',
+            label: {
+                en: 'JSON Import',
+                fr: 'Import JSON',
+            },
+            type: 'Script',
         },
         googleKey: {
             section: 'settings',
@@ -87,6 +100,7 @@ export default {
             bindable: true,
         },
         markers: {
+            section: 'settings',
             label: { en: 'Markers', fr: 'Markers' },
             bindable: true,
             type: 'Array',
@@ -118,6 +132,36 @@ export default {
                 { name: 'New York', lat: 40.712784, lng: -74.005941 },
                 { name: 'Brooklin', lat: 40.650002, lng: -73.949997 },
             ],
+        },
+        nameField: {
+            hidden: (content, sidepanelContent, boundProps) => !boundProps.markers,
+            label: {
+                en: 'Marker name field',
+                fr: 'Marker name field',
+            },
+            type: 'Text',
+            defaultValue: 'name',
+            section: 'settings',
+        },
+        latField: {
+            hidden: (content, sidepanelContent, boundProps) => !boundProps.markers,
+            label: {
+                en: 'Marker lat. field',
+                fr: 'Marker lat. field',
+            },
+            type: 'Text',
+            defaultValue: 'lat',
+            section: 'settings',
+        },
+        lngField: {
+            hidden: (content, sidepanelContent, boundProps) => !boundProps.markers,
+            label: {
+                en: 'Marker long. field',
+                fr: 'Marker long. field',
+            },
+            type: 'Text',
+            defaultValue: 'lng',
+            section: 'settings',
         },
         fixedBounds: {
             label: { en: 'Fixed markers bounds', fr: 'Fixed markers bounds' },

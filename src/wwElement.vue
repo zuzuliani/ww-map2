@@ -28,7 +28,7 @@ export default {
         /* wwEditor:end */
         content: { type: Object, required: true },
     },
-    emits: ['update:content'],
+    emits: ['trigger-event', 'update:content:effect'],
     setup() {
         const markerInstances = [];
         const mapBounds = null;
@@ -69,7 +69,10 @@ export default {
                     lng: parseFloat(this.content.lng),
                 },
                 zoom: this.content.zoom,
-                styles: stylesConfig[`${this.content.mapStyle}`],
+                styles:
+                    this.content.mapStyle === 'custom'
+                        ? JSON.parse(this.content.mapStyleJSON.code)
+                        : stylesConfig[this.content.mapStyle],
                 mapTypeId: this.content.defaultMapType,
                 zoomControl: this.content.zoomControl,
                 scaleControl: this.content.scaleControl,
@@ -81,6 +84,7 @@ export default {
         },
     },
     watch: {
+        /* wwEditor:start */
         'content.googleKey'() {
             this.initMap();
         },
@@ -99,7 +103,11 @@ export default {
         'content.mapStyle'() {
             this.initMap();
         },
-        'content.defaultMapType'() {
+        'content.defaultMapType'(value) {
+            if (value === 'satellite') this.$emit('update:content:effect', { mapStyle: null });
+            this.initMap();
+        },
+        'content.mapStyleJSON'() {
             this.initMap();
         },
         'content.fixedBounds'(fixedBounds) {
@@ -128,6 +136,7 @@ export default {
         'content.mapTypeControl'() {
             this.initMap();
         },
+        /* wwEditor:end */
     },
     mounted() {
         this.initMap();
@@ -196,10 +205,12 @@ export default {
                                     content: marker.name,
                                     maxWidth: 200,
                                 });
-                                _marker.addListener('mouseover', function () {
+                                _marker.addListener('mouseover', () => {
+                                    this.$emit('trigger-event', { name: 'marker:mouseover', event: { marker } });
                                     infowindow.open(this.map, _marker);
                                 });
-                                _marker.addListener('mouseout', function () {
+                                _marker.addListener('mouseout', () => {
+                                    this.$emit('trigger-event', { name: 'marker:mouseout', event: { marker } });
                                     infowindow.close();
                                 });
                             }
