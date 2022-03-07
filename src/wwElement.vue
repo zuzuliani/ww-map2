@@ -113,7 +113,7 @@ export default {
             value ? this.setMapMarkerBounds() : this.initMap();
         },
         'wwEditorState.boundProps.markers'(isBind) {
-            if (!isBind) this.$emit('update:content:effect', { nameField: null, latField: null, longField: null });
+            if (!isBind) this.$emit('update:content:effect', { nameField: null, latField: null, lngField: null });
         },
         /* wwEditor:false */
         markers() {
