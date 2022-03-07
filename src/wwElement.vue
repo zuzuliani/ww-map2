@@ -182,19 +182,19 @@ export default {
                             maxWidth: 200,
                         });
                         _marker.addListener('mouseover', () => {
-                            this.$emit('trigger-event', { name: 'marker:mouseover', event: { marker } });
+                            this.$emit('trigger-event', { name: 'marker:mouseover', event: { marker: _marker } });
                             if (this.content.markerTooltipTrigger === 'hover') {
                                 infowindow.open(this.map, _marker);
                             }
                         });
                         _marker.addListener('mouseout', () => {
-                            this.$emit('trigger-event', { name: 'marker:mouseout', event: { marker } });
+                            this.$emit('trigger-event', { name: 'marker:mouseout', event: { marker: _marker } });
                             if (this.content.markerTooltipTrigger === 'hover') {
                                 infowindow.close();
                             }
                         });
                         _marker.addListener('click', () => {
-                            this.$emit('trigger-event', { name: 'marker:click', event: { marker } });
+                            this.$emit('trigger-event', { name: 'marker:click', event: { marker: _marker } });
                             if (this.content.markerTooltipTrigger === 'click') {
                                 infowindow.open(this.map, _marker);
                             }
