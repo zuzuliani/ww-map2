@@ -21,6 +21,10 @@
 import { Loader } from './googleLoader';
 import stylesConfig from './stylesConfig.json';
 
+const DEFAULT_MARKER_NAME_FIELD = 'name';
+const DEFAULT_MARKER_LAT_FIELD = 'lat';
+const DEFAULT_MARKER_LNG_FIELD = 'lng';
+
 export default {
     props: {
         /* wwEditor:start */
@@ -28,18 +32,14 @@ export default {
         /* wwEditor:end */
         content: { type: Object, required: true },
     },
-    emits: ['update:content'],
-    setup() {
-        const markerInstances = [];
-        const mapBounds = null;
-
-        return { markerInstances, mapBounds };
-    },
+    emits: ['trigger-event', 'update:content:effect'],
     data() {
         return {
             map: null,
             loader: null,
             wrongKey: false,
+            markerInstances: [],
+            mapBounds: null,
         };
     },
     computed: {
@@ -68,8 +68,11 @@ export default {
                     lat: parseFloat(this.content.lat),
                     lng: parseFloat(this.content.lng),
                 },
-                zoom: this.content.zoom,
-                styles: stylesConfig[`${this.content.mapStyle}`],
+                zoom: 10,
+                styles:
+                    this.content.mapStyle === 'custom'
+                        ? JSON.parse(this.content.mapStyleJSON.code)
+                        : stylesConfig[this.content.mapStyle],
                 mapTypeId: this.content.defaultMapType,
                 zoomControl: this.content.zoomControl,
                 scaleControl: this.content.scaleControl,
@@ -79,53 +82,45 @@ export default {
                 mapTypeControl: this.content.mapTypeControl,
             };
         },
+        markers() {
+            const nameField = this.content.nameField || DEFAULT_MARKER_NAME_FIELD;
+            const latField = this.content.latField || DEFAULT_MARKER_LAT_FIELD;
+            const lngField = this.content.lngField || DEFAULT_MARKER_LNG_FIELD;
+
+            if (!Array.isArray(this.content.markers)) return [];
+
+            return this.content.markers.map(marker => ({
+                content: marker[nameField],
+                position: {
+                    lat: parseFloat(marker[latField] || 0),
+                    lng: parseFloat(marker[lngField] || 0),
+                },
+                rawData: marker,
+            }));
+        },
     },
     watch: {
+        /* wwEditor:start */
         'content.googleKey'() {
             this.initMap();
-        },
-        'content.lat'() {
-            this.initMap();
-        },
-        'content.lng'() {
-            this.initMap();
-        },
-        'content.markers'() {
-            this.updateMarkers();
         },
         'content.zoom'(value) {
             if (this.map) this.map.setZoom(value);
         },
-        'content.mapStyle'() {
-            this.initMap();
+        'content.defaultMapType'(value) {
+            if (value === 'satellite') this.$emit('update:content:effect', { mapStyle: null });
         },
-        'content.defaultMapType'() {
-            this.initMap();
+        'content.fixedBounds'(value) {
+            value ? this.setMapMarkerBounds() : this.initMap();
         },
-        'content.fixedBounds'(fixedBounds) {
-            if (fixedBounds) {
-                this.updateMarkers();
-            } else {
-                this.mapBounds = null;
-                this.initMap();
-            }
+        'wwEditorState.boundProps.markers'(isBind) {
+            if (!isBind) this.$emit('update:content:effect', { nameField: null, latField: null, lngField: null });
         },
-        'content.zoomControl'() {
-            this.initMap();
+        /* wwEditor:false */
+        markers() {
+            this.updateMapMarkers();
         },
-        'content.scaleControl'() {
-            this.initMap();
-        },
-        'content.rotateControl'() {
-            this.initMap();
-        },
-        'content.streetViewControl'() {
-            this.initMap();
-        },
-        'content.fullscreenControl'() {
-            this.initMap();
-        },
-        'content.mapTypeControl'() {
+        mapOptions() {
             this.initMap();
         },
     },
@@ -133,7 +128,7 @@ export default {
         this.initMap();
     },
     methods: {
-        initMap() {
+        async initMap() {
             const { lat, lng, zoom, googleKey } = this.content;
             if (!this.isGoogleKeyMatch) {
                 if (googleKey && googleKey.length) this.wrongKey = true;
@@ -145,84 +140,87 @@ export default {
 
             this.wrongKey = false;
             if (!lat || !lng || !zoom || !googleKey.length) return;
-            if (this.loader) {
-                this.loader.reset();
-            }
-            this.loader = new Loader({
-                apiKey: googleKey,
-                language: wwLib.wwLang.lang,
-            });
 
-            this.loader
-                .load()
-                .then(() => {
-                    this.map = new google.maps.Map(this.$refs.map, this.mapOptions);
-                    this.updateMarkers();
-                })
-                .catch(err => {
-                    wwLib.wwLog.error(err);
+            if (!this.loader) {
+                this.loader = new Loader({
+                    apiKey: googleKey,
+                    language: wwLib.wwLang.lang,
                 });
-        },
-        updateMarkers() {
-            if (!this.content.markers) return;
-            let data = this.content.markers;
-
-            if (data && !Array.isArray(data) && typeof data === 'object') {
-                data = new Array(data);
-            } else if ((data && !Array.isArray(data)) || typeof data !== 'object') {
-                return [{}];
             }
 
-            if (this.loader && data) {
-                for (let markerInstance of this.markerInstances) {
-                    markerInstance.setMap(null);
-                    markerInstance = null;
-                }
-                this.markerInstances = [];
+            await this.loader.load();
 
-                for (let marker of data) {
-                    this.loader
-                        .load()
-                        .then(() => {
-                            const latlng = { lat: parseFloat(marker.lat), lng: parseFloat(marker.lng) };
-                            let _marker = new google.maps.Marker({
-                                position: latlng,
-                                map: this.map,
-                                animation: google.maps.Animation.DROP,
-                            });
-                            this.markerInstances.push(_marker);
-                            if (marker.name) {
-                                const infowindow = new google.maps.InfoWindow({
-                                    content: marker.name,
-                                    maxWidth: 200,
-                                });
-                                _marker.addListener('mouseover', function () {
-                                    infowindow.open(this.map, _marker);
-                                });
-                                _marker.addListener('mouseout', function () {
-                                    infowindow.close();
-                                });
-                            }
-                        })
-                        .catch(err => {
-                            wwLib.wwLog.error(err);
+            try {
+                this.map = new google.maps.Map(this.$refs.map, this.mapOptions);
+                this.map.setZoom(zoom);
+                this.updateMapMarkers();
+            } catch (error) {
+                wwLib.wwLog.error(error);
+            }
+        },
+        async updateMapMarkers() {
+            if (!this.markers || !this.loader) return;
+
+            for (const markerInstance of this.markerInstances) {
+                markerInstance.setMap(null);
+            }
+
+            this.markerInstances = [];
+
+            await this.loader.load();
+
+            for (const marker of this.markers) {
+                try {
+                    let _marker = new google.maps.Marker({
+                        position: marker.position,
+                        map: this.map,
+                        animation: google.maps.Animation.DROP,
+                    });
+                    this.markerInstances.push(_marker);
+                    if (marker.content) {
+                        const infowindow = new google.maps.InfoWindow({
+                            content: marker.content,
+                            maxWidth: 200,
                         });
+                        _marker.addListener('mouseover', () => {
+                            this.$emit('trigger-event', {
+                                name: 'marker:mouseover',
+                                event: { marker },
+                            });
+                            if (this.content.markerTooltipTrigger === 'hover') {
+                                infowindow.open(this.map, _marker);
+                            }
+                        });
+                        _marker.addListener('mouseout', () => {
+                            this.$emit('trigger-event', { name: 'marker:mouseout', event: { marker } });
+                            if (this.content.markerTooltipTrigger === 'hover') {
+                                infowindow.close();
+                            }
+                        });
+                        _marker.addListener('click', () => {
+                            this.$emit('trigger-event', { name: 'marker:click', event: { marker } });
+                            if (this.content.markerTooltipTrigger === 'click') {
+                                infowindow.open(this.map, _marker);
+                            }
+                        });
+                    }
+                } catch (error) {
+                    wwLib.wwLog.error(error);
                 }
             }
 
             if (this.content.fixedBounds) {
-                this.mapBounds = new google.maps.LatLngBounds();
-                for (let marker of data) {
-                    if (typeof marker === 'object' && 'lat' in marker && 'lng' in marker) {
-                        let { lat, lng } = marker;
-                        this.mapBounds.extend({ lat: parseFloat(lat), lng: parseFloat(lng) });
-                    }
-                }
-                this.map.fitBounds(this.mapBounds);
-
-                if (this.map && this.map.getZoom() > this.content.zoom) {
-                    this.map.setZoom(this.content.zoom);
-                }
+                this.setMapMarkerBounds();
+            }
+        },
+        setMapMarkerBounds() {
+            this.mapBounds = new google.maps.LatLngBounds();
+            for (const marker of this.markers) {
+                this.mapBounds.extend(marker.position);
+            }
+            this.map.fitBounds(this.mapBounds);
+            if (this.map.getZoom() > this.content.zoom) {
+                this.map.setZoom(this.content.zoom);
             }
         },
     },

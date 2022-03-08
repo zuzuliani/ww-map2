@@ -9,6 +9,11 @@ export default {
         },
         icon: 'tracking',
     },
+    triggerEvents: [
+        { name: 'marker:mouseover', label: { en: 'On marker mouse enter' }, event: { marker: {} } },
+        { name: 'marker:mouseout', label: { en: 'On marker mouse leave' }, event: { marker: {} } },
+        { name: 'marker:click', label: { en: 'On marker click' }, event: { marker: {} } },
+    ],
     properties: {
         defaultMapType: {
             label: {
@@ -41,9 +46,18 @@ export default {
                     { value: 'dark', label: 'Dark' },
                     { value: 'night', label: 'Night' },
                     { value: 'aubergine', label: 'Aubergine' },
+                    { value: 'custom', label: 'Custom Import' },
                 ],
             },
             defaultValue: 'dark',
+        },
+        mapStyleJSON: {
+            hidden: content => content.mapStyle !== 'custom' || content.defaultMapType === 'satellite',
+            label: {
+                en: 'JSON Import',
+                fr: 'Import JSON',
+            },
+            type: 'Script',
         },
         googleKey: {
             section: 'settings',
@@ -87,12 +101,14 @@ export default {
             bindable: true,
         },
         markers: {
+            section: 'settings',
             label: { en: 'Markers', fr: 'Markers' },
             bindable: true,
             type: 'Array',
             options: {
                 item: {
                     type: 'Object',
+                    defaultValue: { name: '', lat: 0, lng: 0 },
                     options: {
                         item: {
                             name: {
@@ -118,6 +134,97 @@ export default {
                 { name: 'New York', lat: 40.712784, lng: -74.005941 },
                 { name: 'Brooklin', lat: 40.650002, lng: -73.949997 },
             ],
+        },
+        hintFields: {
+            hidden: (content, sidepanelContent, boundProps) => !boundProps.markers || content.markers,
+            label: {
+                en: 'Marker fields',
+                fr: 'Champs du marker',
+            },
+            type: 'Info',
+            options: {
+                text: { en: 'Please provide at least one marker to configure fields' },
+            },
+            editorOnly: true,
+            section: 'settings',
+        },
+        nameField: {
+            hidden: (content, sidepanelContent, boundProps) => !boundProps.markers || !content.markers,
+            label: {
+                en: 'Marker name field',
+                fr: 'Marker name field',
+            },
+            type: 'TextSelect',
+            options: content => {
+                const properties = [{ value: null, label: { en: 'Select a property' } }];
+
+                if (content.markers && typeof content.markers[0] === 'object') {
+                    properties.push(
+                        ...Object.keys(content.markers[0]).map(key => ({ value: key, label: { en: key } }))
+                    );
+                }
+
+                return { options: properties };
+            },
+            defaultValue: null,
+            section: 'settings',
+        },
+        latField: {
+            hidden: (content, sidepanelContent, boundProps) => !boundProps.markers || !content.markers,
+            label: {
+                en: 'Marker lat. field',
+                fr: 'Marker lat. field',
+            },
+            type: 'TextSelect',
+            options: content => {
+                const properties = [{ value: null, label: { en: 'Select a property' } }];
+
+                if (content.markers && typeof content.markers[0] === 'object') {
+                    properties.push(
+                        ...Object.keys(content.markers[0]).map(key => ({ value: key, label: { en: key } }))
+                    );
+                }
+
+                return { options: properties };
+            },
+            defaultValue: null,
+            section: 'settings',
+        },
+        lngField: {
+            hidden: (content, sidepanelContent, boundProps) => !boundProps.markers || !content.markers,
+            label: {
+                en: 'Marker long. field',
+                fr: 'Marker long. field',
+            },
+            type: 'TextSelect',
+            options: content => {
+                const properties = [{ value: null, label: { en: 'Select a property' } }];
+
+                if (content.markers && typeof content.markers[0] === 'object') {
+                    properties.push(
+                        ...Object.keys(content.markers[0]).map(key => ({ value: key, label: { en: key } }))
+                    );
+                }
+
+                return { options: properties };
+            },
+            defaultValue: null,
+            section: 'settings',
+        },
+        markerTooltipTrigger: {
+            label: {
+                en: 'Marker tooltip trigger',
+                fr: 'Déclencheur infobox',
+            },
+            type: 'TextSelect',
+            options: {
+                options: [
+                    { value: 'hover', label: 'Hover' },
+                    { value: 'click', label: 'Click' },
+                ],
+            },
+            defaultValue: 'hover',
+            section: 'settings',
         },
         fixedBounds: {
             label: { en: 'Fixed markers bounds', fr: 'Fixed markers bounds' },
