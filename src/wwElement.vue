@@ -33,13 +33,15 @@ export default {
         content: { type: Object, required: true },
     },
     emits: ['trigger-event', 'update:content:effect'],
+    setup() {
+        const markerInstances = [];
+        return { markerInstances };
+    },
     data() {
         return {
             map: null,
             loader: null,
             wrongKey: false,
-            markerInstances: [],
-            mapBounds: null,
         };
     },
     computed: {
@@ -214,11 +216,11 @@ export default {
             }
         },
         setMapMarkerBounds() {
-            this.mapBounds = new google.maps.LatLngBounds();
+            const mapBounds = new google.maps.LatLngBounds();
             for (const marker of this.markers) {
-                this.mapBounds.extend(marker.position);
+                mapBounds.extend(marker.position);
             }
-            this.map.fitBounds(this.mapBounds);
+            this.map.fitBounds(mapBounds);
             if (this.map.getZoom() > this.content.zoom) {
                 this.map.setZoom(this.content.zoom);
             }
