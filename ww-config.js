@@ -154,17 +154,13 @@ export default {
                 en: 'Marker name field',
                 fr: 'Marker name field',
             },
-            type: 'TextSelect',
+            type: 'ObjectPropertyPath',
             options: content => {
-                const properties = [{ value: null, label: { en: 'Select a property' } }];
-
-                if (content.markers && typeof content.markers[0] === 'object') {
-                    properties.push(
-                        ...Object.keys(content.markers[0]).map(key => ({ value: key, label: { en: key } }))
-                    );
+                if (!content.markers.length || typeof content.markers[0] !== 'object') {
+                    return null;
                 }
 
-                return { options: properties };
+                return { object: content.markers[0] };
             },
             defaultValue: null,
             section: 'settings',
@@ -177,15 +173,11 @@ export default {
             },
             type: 'TextSelect',
             options: content => {
-                const properties = [{ value: null, label: { en: 'Select a property' } }];
-
-                if (content.markers && typeof content.markers[0] === 'object') {
-                    properties.push(
-                        ...Object.keys(content.markers[0]).map(key => ({ value: key, label: { en: key } }))
-                    );
+                if (!content.markers.length || typeof content.markers[0] !== 'object') {
+                    return null;
                 }
 
-                return { options: properties };
+                return { object: content.markers[0] };
             },
             defaultValue: null,
             section: 'settings',
@@ -196,17 +188,12 @@ export default {
                 en: 'Marker long. field',
                 fr: 'Marker long. field',
             },
-            type: 'TextSelect',
             options: content => {
-                const properties = [{ value: null, label: { en: 'Select a property' } }];
-
-                if (content.markers && typeof content.markers[0] === 'object') {
-                    properties.push(
-                        ...Object.keys(content.markers[0]).map(key => ({ value: key, label: { en: key } }))
-                    );
+                if (!content.markers.length || typeof content.markers[0] !== 'object') {
+                    return null;
                 }
 
-                return { options: properties };
+                return { object: content.markers[0] };
             },
             defaultValue: null,
             section: 'settings',
