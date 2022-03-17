@@ -171,7 +171,7 @@ export default {
                 en: 'Marker lat. field',
                 fr: 'Marker lat. field',
             },
-            type: 'TextSelect',
+            type: 'ObjectPropertyPath',
             options: content => {
                 if (!content.markers.length || typeof content.markers[0] !== 'object') {
                     return null;
@@ -188,6 +188,7 @@ export default {
                 en: 'Marker long. field',
                 fr: 'Marker long. field',
             },
+            type: 'ObjectPropertyPath',
             options: content => {
                 if (!content.markers.length || typeof content.markers[0] !== 'object') {
                     return null;

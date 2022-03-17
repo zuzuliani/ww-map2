@@ -92,10 +92,10 @@ export default {
             if (!Array.isArray(this.content.markers)) return [];
 
             return this.content.markers.map(marker => ({
-                content: marker[nameField],
+                content: wwLib.resolveObjectPropertyPath(marker, nameField),
                 position: {
-                    lat: parseFloat(marker[latField] || 0),
-                    lng: parseFloat(marker[lngField] || 0),
+                    lat: parseFloat(wwLib.resolveObjectPropertyPath(marker, latField) || 0),
+                    lng: parseFloat(wwLib.resolveObjectPropertyPath(marker, lngField) || 0),
                 },
                 rawData: marker,
             }));
