@@ -153,8 +153,7 @@ export default {
             await this.loader.load();
 
             try {
-                this.map = new google.maps.Map(this.$refs.map, this.mapOptions);
-                this.map.setZoom(zoom);
+                this.map = new google.maps.Map(this.$refs.map, { ...this.mapOptions, zoom: this.content.zoom });
                 this.updateMapMarkers();
             } catch (error) {
                 wwLib.wwLog.error(error);
@@ -221,9 +220,6 @@ export default {
                 mapBounds.extend(marker.position);
             }
             this.map.fitBounds(mapBounds);
-            if (this.map.getZoom() > this.content.zoom) {
-                this.map.setZoom(this.content.zoom);
-            }
         },
     },
 };
