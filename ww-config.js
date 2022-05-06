@@ -10,9 +10,67 @@ export default {
         icon: 'tracking',
     },
     triggerEvents: [
-        { name: 'marker:mouseover', label: { en: 'On marker mouse enter' }, event: { marker: {} } },
-        { name: 'marker:mouseout', label: { en: 'On marker mouse leave' }, event: { marker: {} } },
-        { name: 'marker:click', label: { en: 'On marker click' }, event: { marker: {} } },
+        {
+            name: 'map:click',
+            label: { en: 'On map click' },
+            event: {
+                latLng: {
+                    lat: 48.84872727506581,
+                    lng: 2.351657694024656,
+                },
+                domEvent: {},
+                pixel: {
+                    x: 474,
+                    y: 196,
+                },
+                xb: {
+                    x: 129.67228991575087,
+                    y: 88.07977939599527,
+                },
+            },
+        },
+        {
+            name: 'marker:mouseover',
+            label: { en: 'On marker mouse enter' },
+            event: {
+                marker: {
+                    content: 'Paris',
+                    position: {
+                        lat: 48.84872727506581,
+                        lng: 2.351657694024656,
+                    },
+                    rawData: {},
+                },
+            },
+        },
+        {
+            name: 'marker:mouseout',
+            label: { en: 'On marker mouse leave' },
+            event: {
+                marker: {
+                    content: 'Paris',
+                    position: {
+                        lat: 48.84872727506581,
+                        lng: 2.351657694024656,
+                    },
+                    rawData: {},
+                },
+            },
+        },
+        {
+            name: 'marker:click',
+            label: { en: 'On marker click' },
+            event: {
+                marker: {
+                    content: 'Paris',
+                    position: {
+                        lat: 48.84872727506581,
+                        lng: 2.351657694024656,
+                    },
+                    rawData: {},
+                },
+            },
+        },
     ],
     properties: {
         defaultMapType: {
