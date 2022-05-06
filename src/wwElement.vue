@@ -154,6 +154,14 @@ export default {
 
             try {
                 this.map = new google.maps.Map(this.$refs.map, { ...this.mapOptions, zoom: this.content.zoom });
+                this.map.addListener('click', mapsMouseEvent => {
+                    mapsMouseEvent.latLng.lat = mapsMouseEvent.latLng.lat();
+                    mapsMouseEvent.latLng.lng = mapsMouseEvent.latLng.lng();
+                    this.$emit('trigger-event', {
+                        name: 'map:click',
+                        event: { ...mapsMouseEvent },
+                    });
+                });
                 this.updateMapMarkers();
             } catch (error) {
                 wwLib.wwLog.error(error);
