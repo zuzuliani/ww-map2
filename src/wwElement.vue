@@ -1,5 +1,5 @@
 <template>
-    <div class="ww-map" :class="{ inactive: isEditing }">
+    <div :id="'map-' + wwElementState.uid" class="ww-map" :class="{ inactive: isEditing }">
         <div class="map-container">
             <div v-if="isError" class="map-placeholder" :class="{ error: isError }">
                 <div class="placeholder-content">
@@ -31,6 +31,7 @@ export default {
         wwEditorState: { type: Object, required: true },
         /* wwEditor:end */
         content: { type: Object, required: true },
+        wwElementState: { type: Object, required: true },
     },
     emits: ['trigger-event', 'update:content:effect'],
     setup() {
@@ -42,6 +43,7 @@ export default {
             map: null,
             loader: null,
             wrongKey: false,
+            observer: null,
         };
     },
     computed: {
@@ -128,6 +130,20 @@ export default {
     },
     mounted() {
         this.initMap();
+
+        // Fixed bound require the map to be visible
+        this.observer = new IntersectionObserver(
+            changes => {
+                if (changes.some(change => change.isIntersecting) && this.content.fixedBounds) {
+                    this.setMapMarkerBounds();
+                }
+            },
+            { trackVisibility: true, delay: 100 }
+        );
+        this.observer.observe(wwLib.getFrontDocument().getElementById('map-' + this.wwElementState.uid));
+    },
+    beforeUnmount() {
+        this.observer.disconnect();
     },
     methods: {
         async initMap() {
@@ -148,9 +164,8 @@ export default {
                     apiKey: googleKey,
                     language: wwLib.wwLang.lang,
                 });
+                await this.loader.load();
             }
-
-            await this.loader.load();
 
             try {
                 this.map = new google.maps.Map(this.$refs.map, { ...this.mapOptions, zoom: this.content.zoom });
@@ -175,8 +190,6 @@ export default {
             }
 
             this.markerInstances = [];
-
-            await this.loader.load();
 
             for (const marker of this.markers) {
                 try {
