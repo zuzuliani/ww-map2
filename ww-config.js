@@ -8,6 +8,19 @@ export default {
             en: 'Map',
         },
         icon: 'tracking',
+        customSettingsPropertiesOrder: [
+            'googleKey',
+            ['lat', 'lng', 'zoom'],
+            ['markers', 'hintFields', 'nameField', 'latField', 'lngField', 'markerTooltipTrigger', 'fixedBounds'],
+            [
+                'zoomControl',
+                'scaleControl',
+                'rotateControl',
+                'streetViewControl',
+                'fullscreenControl',
+                'mapTypeControl',
+            ],
+        ],
     },
     triggerEvents: [
         {
