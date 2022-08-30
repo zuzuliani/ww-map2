@@ -41,6 +41,7 @@ export default {
                     y: 88.07977939599527,
                 },
             },
+            default: true,
         },
         {
             name: 'marker:mouseover',
