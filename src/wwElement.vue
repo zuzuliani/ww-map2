@@ -1,5 +1,5 @@
 <template>
-    <div :id="'map-' + wwElementState.uid" class="ww-map" :class="{ inactive: isEditing }">
+    <div :id="'map-' + wwElementState.uid" class="ww-map" :class="{ inactive: isEditing && !isError }">
         <div class="map-container">
             <div v-if="isError" class="map-placeholder" :class="{ error: isError }">
                 <div class="placeholder-content">
