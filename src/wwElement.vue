@@ -242,6 +242,12 @@ export default {
             }
             this.map.fitBounds(mapBounds);
         },
+        /* wwEditor:start */
+        getMarkerTestEvent() {
+            if (!this.markers.length) throw new Error('No markers found');
+            return { marker: this.markers[0] };
+        },
+        /* wwEditor:end */
     },
 };
 </script>
