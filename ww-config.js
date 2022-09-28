@@ -140,6 +140,12 @@ export default {
             },
             defaultValue: '',
             bindable: true,
+            /* wwEditor:start */
+            bindingValidation: {
+                type: 'string',
+                tooltip: 'A string that represents the API key: `"key********************"`',
+            },
+            /* wwEditor:end */
         },
         lat: {
             section: 'settings',
@@ -150,6 +156,12 @@ export default {
             },
             defaultValue: '40.712784',
             bindable: true,
+            /* wwEditor:start */
+            bindingValidation: {
+                type: 'string',
+                tooltip: 'A string that defines the latitue: `"40.712784"`',
+            },
+            /* wwEditor:end */
         },
         lng: {
             section: 'settings',
@@ -160,6 +172,12 @@ export default {
             },
             defaultValue: '-74.005941',
             bindable: true,
+            /* wwEditor:start */
+            bindingValidation: {
+                type: 'string',
+                tooltip: 'A string that defines the longitude: `"15.347554"`',
+            },
+            /* wwEditor:end */
         },
         zoom: {
             section: 'settings',
@@ -172,6 +190,12 @@ export default {
             },
             defaultValue: 11,
             bindable: true,
+            /* wwEditor:start */
+            bindingValidation: {
+                type: 'number',
+                tooltip: 'A number that defines the zoom: `11`',
+            },
+            /* wwEditor:end */
         },
         markers: {
             section: 'settings',
@@ -207,6 +231,13 @@ export default {
                 { name: 'New York', lat: 40.712784, lng: -74.005941 },
                 { name: 'Brooklin', lat: 40.650002, lng: -73.949997 },
             ],
+            /* wwEditor:start */
+            bindingValidation: {
+                type: 'array',
+                tooltip:
+                    'A collection of data in array format: \n\n `[{}, {}, ...] || ["string1", "string2", ...] || [1, 2, ...]`',
+            },
+            /* wwEditor:end */
         },
         hintFields: {
             hidden: (content, sidepanelContent, boundProps) => !boundProps.markers || content.markers,
