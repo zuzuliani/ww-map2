@@ -236,6 +236,7 @@ export default {
             }
         },
         setMapMarkerBounds() {
+            if (!google || !this.map) return;
             const mapBounds = new google.maps.LatLngBounds();
             for (const marker of this.markers) {
                 mapBounds.extend(marker.position);
