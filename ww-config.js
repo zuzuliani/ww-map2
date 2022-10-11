@@ -56,6 +56,7 @@ export default {
                     rawData: {},
                 },
             },
+            getTestEvent: 'getMarkerTestEvent',
         },
         {
             name: 'marker:mouseout',
@@ -70,6 +71,7 @@ export default {
                     rawData: {},
                 },
             },
+            getTestEvent: 'getMarkerTestEvent',
         },
         {
             name: 'marker:click',
@@ -84,6 +86,7 @@ export default {
                     rawData: {},
                 },
             },
+            getTestEvent: 'getMarkerTestEvent',
         },
     ],
     properties: {
