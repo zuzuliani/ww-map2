@@ -1,5 +1,5 @@
 <template>
-    <div :id="'map-' + wwElementState.uid" class="ww-map" :class="{ inactive: isEditing && !isError }">
+    <div class="ww-map" :class="{ inactive: isEditing && !isError }">
         <div class="map-container">
             <div v-if="isError" class="map-placeholder" :class="{ error: isError }">
                 <div class="placeholder-content">
@@ -140,7 +140,7 @@ export default {
             },
             { trackVisibility: true, delay: 100 }
         );
-        this.observer.observe(wwLib.getFrontDocument().getElementById('map-' + this.wwElementState.uid));
+        this.observer.observe(this.$refs.map);
     },
     beforeUnmount() {
         this.observer.disconnect();
@@ -235,8 +235,9 @@ export default {
                 this.setMapMarkerBounds();
             }
         },
-        setMapMarkerBounds() {
-            if (!google || !this.map) return;
+        async setMapMarkerBounds() {
+            await this.$nextTick();
+            if (!this.map) return;
             const mapBounds = new google.maps.LatLngBounds();
             for (const marker of this.markers) {
                 mapBounds.extend(marker.position);
