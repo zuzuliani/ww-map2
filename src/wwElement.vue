@@ -69,8 +69,8 @@ export default {
         mapOptions() {
             return {
                 center: {
-                    lat: parseFloat(this.content.lat),
-                    lng: parseFloat(this.content.lng),
+                    lat: parseFloat(this.content.lat || 0),
+                    lng: parseFloat(this.content.lng || 0),
                 },
                 zoom: 10,
                 styles:
@@ -109,7 +109,7 @@ export default {
             this.initMap();
         },
         'content.zoom'(value) {
-            if (this.map) this.map.setZoom(value);
+            if (this.map) this.map.setZoom(value || 0);
         },
         'content.defaultMapType'(value) {
             if (value === 'satellite') this.$emit('update:content:effect', { mapStyle: null });
@@ -147,7 +147,7 @@ export default {
     },
     methods: {
         async initMap() {
-            const { lat, lng, zoom, googleKey } = this.content;
+            const { googleKey } = this.content;
             if (!this.isGoogleKeyMatch) {
                 if (googleKey && googleKey.length) this.wrongKey = true;
                 setTimeout(() => {
@@ -157,7 +157,7 @@ export default {
             }
 
             this.wrongKey = false;
-            if (!lat || !lng || !zoom || !googleKey.length) return;
+            if (!googleKey.length) return;
 
             if (!this.loader) {
                 this.loader = new Loader({
