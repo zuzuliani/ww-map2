@@ -1,5 +1,5 @@
 <template>
-    <div :id="'map-' + uid" class="ww-map" :class="{ inactive: isEditing && !isError }">
+    <div class="ww-map" :class="{ inactive: isEditing && !isError }">
         <div class="map-container">
             <div v-if="isError" class="map-placeholder" :class="{ error: isError }">
                 <div class="placeholder-content">
@@ -27,7 +27,6 @@ const DEFAULT_MARKER_LNG_FIELD = 'lng';
 
 export default {
     props: {
-        uid: { type: String, required: true },
         /* wwEditor:start */
         wwEditorState: { type: Object, required: true },
         /* wwEditor:end */
@@ -141,7 +140,7 @@ export default {
             },
             { trackVisibility: true, delay: 100 }
         );
-        this.observer.observe(wwLib.getFrontDocument().getElementById('map-' + this.uid));
+        this.observer.observe(this.$refs.map);
     },
     beforeUnmount() {
         this.observer.disconnect();
