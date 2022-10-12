@@ -120,7 +120,7 @@ export default {
         'wwEditorState.boundProps.markers'(isBind) {
             if (!isBind) this.$emit('update:content:effect', { nameField: null, latField: null, lngField: null });
         },
-        /* wwEditor:false */
+        /* wwEditor:end */
         markers() {
             this.updateMapMarkers();
         },
@@ -235,8 +235,7 @@ export default {
                 this.setMapMarkerBounds();
             }
         },
-        async setMapMarkerBounds() {
-            await this.$nextTick();
+        setMapMarkerBounds() {
             if (!this.map) return;
             const mapBounds = new google.maps.LatLngBounds();
             for (const marker of this.markers) {
