@@ -207,20 +207,26 @@ export default {
                         _marker.addListener('mouseover', e => {
                             this.$emit('trigger-event', {
                                 name: 'marker:mouseover',
-                                event: { marker, domEvent: e },
+                                event: { marker, domEvent: e.domEvent },
                             });
                             if (this.content.markerTooltipTrigger === 'hover' && marker.content) {
                                 infowindow.open(this.map, _marker);
                             }
                         });
                         _marker.addListener('mouseout', e => {
-                            this.$emit('trigger-event', { name: 'marker:mouseout', event: { marker, domEvent: e } });
+                            this.$emit('trigger-event', {
+                                name: 'marker:mouseout',
+                                event: { marker, domEvent: e.domEvent },
+                            });
                             if (this.content.markerTooltipTrigger === 'hover') {
                                 infowindow.close();
                             }
                         });
                         _marker.addListener('click', e => {
-                            this.$emit('trigger-event', { name: 'marker:click', event: { marker, domEvent: e } });
+                            this.$emit('trigger-event', {
+                                name: 'marker:click',
+                                event: { marker, domEvent: e.domEvent },
+                            });
                             if (this.content.markerTooltipTrigger === 'click' && marker.content) {
                                 infowindow.open(this.map, _marker);
                             }
