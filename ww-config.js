@@ -55,6 +55,7 @@ export default {
                     },
                     rawData: {},
                 },
+                domEvent: { x: 128, y: 156, target: null },
             },
             getTestEvent: 'getMarkerTestEvent',
         },
@@ -70,6 +71,7 @@ export default {
                     },
                     rawData: {},
                 },
+                domEvent: { x: 128, y: 156, target: null },
             },
             getTestEvent: 'getMarkerTestEvent',
         },
@@ -83,7 +85,7 @@ export default {
                         lat: 48.84872727506581,
                         lng: 2.351657694024656,
                     },
-                    rawData: {},
+                    rawData: { x: 128, y: 156, target: null },
                 },
             },
             getTestEvent: 'getMarkerTestEvent',
@@ -283,6 +285,7 @@ export default {
             type: 'TextSelect',
             options: {
                 options: [
+                    { value: null, label: 'None' },
                     { value: 'hover', label: 'Hover' },
                     { value: 'click', label: 'Click' },
                 ],

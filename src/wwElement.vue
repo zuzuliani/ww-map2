@@ -204,24 +204,24 @@ export default {
                             content: marker.content,
                             maxWidth: 200,
                         });
-                        _marker.addListener('mouseover', () => {
+                        _marker.addListener('mouseover', e => {
                             this.$emit('trigger-event', {
                                 name: 'marker:mouseover',
-                                event: { marker },
+                                event: { marker, domEvent: e },
                             });
-                            if (this.content.markerTooltipTrigger === 'hover') {
+                            if (this.content.markerTooltipTrigger === 'hover' && marker.content) {
                                 infowindow.open(this.map, _marker);
                             }
                         });
-                        _marker.addListener('mouseout', () => {
-                            this.$emit('trigger-event', { name: 'marker:mouseout', event: { marker } });
+                        _marker.addListener('mouseout', e => {
+                            this.$emit('trigger-event', { name: 'marker:mouseout', event: { marker, domEvent: e } });
                             if (this.content.markerTooltipTrigger === 'hover') {
                                 infowindow.close();
                             }
                         });
-                        _marker.addListener('click', () => {
-                            this.$emit('trigger-event', { name: 'marker:click', event: { marker } });
-                            if (this.content.markerTooltipTrigger === 'click') {
+                        _marker.addListener('click', e => {
+                            this.$emit('trigger-event', { name: 'marker:click', event: { marker, domEvent: e } });
+                            if (this.content.markerTooltipTrigger === 'click' && marker.content) {
                                 infowindow.open(this.map, _marker);
                             }
                         });
@@ -247,7 +247,7 @@ export default {
         /* wwEditor:start */
         getMarkerTestEvent() {
             if (!this.markers.length) throw new Error('No markers found');
-            return { marker: this.markers[0] };
+            return { marker: this.markers[0], domEvent: { x: 128, y: 156, target: null } };
         },
         /* wwEditor:end */
     },
