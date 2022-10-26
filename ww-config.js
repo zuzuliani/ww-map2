@@ -7,7 +7,7 @@ export default {
             fr: 'Map',
             en: 'Map',
         },
-        icon: 'tracking',
+        icon: 'map',
         customSettingsPropertiesOrder: [
             'googleKey',
             ['lat', 'lng', 'zoom'],
