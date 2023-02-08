@@ -72,7 +72,7 @@ export default {
                     lat: parseFloat(this.content.lat || 0),
                     lng: parseFloat(this.content.lng || 0),
                 },
-                zoom: 10,
+                zoom: this.content.zoom,
                 styles:
                     this.content.mapStyle === 'custom'
                         ? JSON.parse(this.content.mapStyleJSON.code)
@@ -242,7 +242,7 @@ export default {
             }
         },
         setMapMarkerBounds() {
-            if (!this.map) return;
+            if (!this.map || this.markers.length < 2) return;
             const mapBounds = new google.maps.LatLngBounds();
             for (const marker of this.markers) {
                 mapBounds.extend(marker.position);
