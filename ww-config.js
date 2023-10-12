@@ -229,6 +229,17 @@ export default {
                                 type: 'Text',
                                 options: { placeholder: 'Longitude' },
                             },
+                            icon: {
+                                label: { en: 'Icon' },
+                                type: 'Image',
+                                bindable: true,
+                                /* wwEditor:start */
+                                bindingValidation: {
+                                    type: 'string',
+                                    tooltip: 'A string that represents the image url: `"https://.../.../my_image.png"`',
+                                },
+                                /* wwEditor:end */
+                            },
                         },
                     },
                 },

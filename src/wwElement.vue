@@ -100,6 +100,7 @@ export default {
                     lng: parseFloat(wwLib.resolveObjectPropertyPath(marker, lngField) || 0),
                 },
                 rawData: marker,
+                icon: marker.icon,
             }));
         },
     },
@@ -196,6 +197,7 @@ export default {
                     let _marker = new google.maps.Marker({
                         position: marker.position,
                         map: this.map,
+                        icon: marker.icon,
                         animation: google.maps.Animation.DROP,
                     });
                     this.markerInstances.push(_marker);
