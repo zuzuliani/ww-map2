@@ -209,7 +209,7 @@ export default {
                             ? {
                                   url: marker.url,
                                   scaledSize:
-                                      this.content.markersAutoSize && marker.width && marker.height
+                                      !this.content.markersAutoSize && marker.width && marker.height
                                           ? new google.maps.Size(marker.width, marker.height)
                                           : undefined,
                               }

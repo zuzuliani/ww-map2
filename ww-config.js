@@ -267,7 +267,7 @@ export default {
                                 options: { min: 0, step: 1 },
                                 /* wwEditor:start */
                                 hidden: (content, _sidepanelContent, boundProps) =>
-                                    !content.markersIcon || !content.markersAutoSize,
+                                    !content.markersIcon || content.markersAutoSize,
                                 /* wwEditor:end */
                             },
                             height: {
@@ -277,7 +277,7 @@ export default {
                                 options: { min: 0, step: 1 },
                                 /* wwEditor:start */
                                 hidden: (content, _sidepanelContent, boundProps) =>
-                                    !content.markersIcon || !content.markersAutoSize,
+                                    !content.markersIcon || content.markersAutoSize,
                                 /* wwEditor:end */
                             },
                         },
@@ -375,7 +375,7 @@ export default {
         },
         widthField: {
             hidden: (content, sidepanelContent, boundProps) =>
-                !boundProps.markers || !content.markers || !content.markersIcon || !content.markersAutoSize,
+                !boundProps.markers || !content.markers || !content.markersIcon || content.markersAutoSize,
             label: 'Marker width field',
             type: 'ObjectPropertyPath',
             options: content => {
@@ -388,7 +388,7 @@ export default {
         },
         heightField: {
             hidden: (content, sidepanelContent, boundProps) =>
-                !boundProps.markers || !content.markers || !content.markersIcon || !content.markersAutoSize,
+                !boundProps.markers || !content.markers || !content.markersIcon || content.markersAutoSize,
             label: 'Marker height field',
             type: 'ObjectPropertyPath',
             options: content => {
