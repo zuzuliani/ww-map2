@@ -1,4 +1,10 @@
 export default {
+    // Maker icon (on/off)
+    // if (prev = on) Maker auto size (on/off)
+    // if Icon URL
+    // if (!auto) Icon width (d=50)
+    // if (!auto) Icon height (d=50)
+    // if (w||h not int) auto
     options: {
         sizable: true,
     },
@@ -11,7 +17,17 @@ export default {
         customSettingsPropertiesOrder: [
             'googleKey',
             ['lat', 'lng', 'zoom'],
-            ['markers', 'hintFields', 'nameField', 'latField', 'lngField', 'markerTooltipTrigger', 'fixedBounds'],
+            [
+                'markers',
+                'hintFields',
+                'nameField',
+                'latField',
+                'lngField',
+                'markerTooltipTrigger',
+                'fixedBounds',
+                'markersIcon',
+                'markersAutoSize',
+            ],
             [
                 'zoomControl',
                 'scaleControl',
@@ -229,7 +245,7 @@ export default {
                                 type: 'Text',
                                 options: { placeholder: 'Longitude' },
                             },
-                            icon: {
+                            url: {
                                 label: { en: 'Icon' },
                                 type: 'Image',
                                 bindable: true,
@@ -238,6 +254,27 @@ export default {
                                     type: 'string',
                                     tooltip: 'A string that represents the image url: `"https://.../.../my_image.png"`',
                                 },
+                                hidden: (content, _sidepanelContent, boundProps) => !content.markersIcon,
+                                /* wwEditor:end */
+                            },
+                            width: {
+                                label: 'Width',
+                                type: 'Number',
+                                bindable: true,
+                                options: { min: 0, step: 1 },
+                                /* wwEditor:start */
+                                hidden: (content, _sidepanelContent, boundProps) =>
+                                    !content.markersIcon && !content.markersAutoSize,
+                                /* wwEditor:end */
+                            },
+                            height: {
+                                label: 'Height',
+                                type: 'Number',
+                                bindable: true,
+                                options: { min: 0, step: 1 },
+                                /* wwEditor:start */
+                                hidden: (content, _sidepanelContent, boundProps) =>
+                                    !content.markersIcon && !content.markersAutoSize,
                                 /* wwEditor:end */
                             },
                         },
@@ -320,6 +357,45 @@ export default {
             defaultValue: null,
             section: 'settings',
         },
+        iconField: {
+            hidden: (content, sidepanelContent, boundProps) =>
+                (!boundProps.markers || !content.markers) && !content.markersIcon,
+            label: 'Marker icon field',
+            type: 'ObjectPropertyPath',
+            options: content => {
+                return !content.markers.length || typeof content.markers[0] !== 'object'
+                    ? null
+                    : { object: content.markers[0] };
+            },
+            defaultValue: null,
+            section: 'settings',
+        },
+        widthField: {
+            hidden: (content, sidepanelContent, boundProps) =>
+                (!boundProps.markers || !content.markers) && !content.markersIcon && !content.markersAutoSize,
+            label: 'Marker with field',
+            type: 'ObjectPropertyPath',
+            options: content => {
+                return !content.markers.length || typeof content.markers[0] !== 'object'
+                    ? null
+                    : { object: content.markers[0] };
+            },
+            defaultValue: null,
+            section: 'settings',
+        },
+        heightField: {
+            hidden: (content, sidepanelContent, boundProps) =>
+                (!boundProps.markers || !content.markers) && !content.markersIcon && !content.markersAutoSize,
+            label: 'Marker with field',
+            type: 'ObjectPropertyPath',
+            options: content => {
+                return !content.markers.length || typeof content.markers[0] !== 'object'
+                    ? null
+                    : { object: content.markers[0] };
+            },
+            defaultValue: null,
+            section: 'settings',
+        },
         markerTooltipTrigger: {
             label: {
                 en: 'Marker tooltip trigger',
@@ -341,6 +417,19 @@ export default {
             type: 'OnOff',
             section: 'settings',
             defaultValue: true,
+        },
+        markersIcon: {
+            label: 'Markers icon',
+            type: 'OnOff',
+            section: 'settings',
+            defaultValue: false,
+        },
+        markersAutoSize: {
+            label: 'Markers auto size',
+            type: 'OnOff',
+            section: 'settings',
+            defaultValue: true,
+            hidden: (content, _sidepanelContent, boundProps) => !content.markersIcon,
         },
         zoomControl: {
             label: { en: 'Zoom control', fr: 'Zoom control' },
