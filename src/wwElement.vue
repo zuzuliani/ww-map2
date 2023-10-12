@@ -90,6 +90,9 @@ export default {
             const nameField = this.content.nameField || DEFAULT_MARKER_NAME_FIELD;
             const latField = this.content.latField || DEFAULT_MARKER_LAT_FIELD;
             const lngField = this.content.lngField || DEFAULT_MARKER_LNG_FIELD;
+            const urlField = this.content.urlField || DEFAULT_MARKER_URL_FIELD;
+            const widthField = this.content.widthField || DEFAULT_MARKER_WIDTH_FIELD;
+            const heightField = this.content.heightField || DEFAULT_MARKER_HEIGHT_FIELD;
 
             if (!Array.isArray(this.content.markers)) return [];
 
@@ -100,7 +103,9 @@ export default {
                     lng: parseFloat(wwLib.resolveObjectPropertyPath(marker, lngField) || 0),
                 },
                 rawData: marker,
-                icon: marker.icon,
+                url: wwLib.resolveObjectPropertyPath(marker, urlField),
+                width: wwLib.resolveObjectPropertyPath(marker, widthField),
+                height: wwLib.resolveObjectPropertyPath(marker, heightField),
             }));
         },
     },
@@ -194,10 +199,20 @@ export default {
 
             for (const marker of this.markers) {
                 try {
+                    const width = parseInt(marker.width || 0);
+                    const height = parseInt(marker.height || 0);
                     let _marker = new google.maps.Marker({
                         position: marker.position,
                         map: this.map,
-                        icon: marker.icon,
+                        icon: this.content.markersIcon
+                            ? {
+                                  url: marker.url,
+                                  scaledSize:
+                                      this.markersAutoSize && width && height
+                                          ? new google.maps.Size(width, height)
+                                          : undefined,
+                              }
+                            : {},
                         animation: google.maps.Animation.DROP,
                     });
                     this.markerInstances.push(_marker);

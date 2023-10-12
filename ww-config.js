@@ -264,7 +264,7 @@ export default {
                                 options: { min: 0, step: 1 },
                                 /* wwEditor:start */
                                 hidden: (content, _sidepanelContent, boundProps) =>
-                                    !content.markersIcon && !content.markersAutoSize,
+                                    !content.markersIcon || !content.markersAutoSize,
                                 /* wwEditor:end */
                             },
                             height: {
@@ -274,7 +274,7 @@ export default {
                                 options: { min: 0, step: 1 },
                                 /* wwEditor:start */
                                 hidden: (content, _sidepanelContent, boundProps) =>
-                                    !content.markersIcon && !content.markersAutoSize,
+                                    !content.markersIcon || !content.markersAutoSize,
                                 /* wwEditor:end */
                             },
                         },
@@ -359,7 +359,7 @@ export default {
         },
         iconField: {
             hidden: (content, sidepanelContent, boundProps) =>
-                (!boundProps.markers || !content.markers) && !content.markersIcon,
+                !boundProps.markers || !content.markers || !content.markersIcon,
             label: 'Marker icon field',
             type: 'ObjectPropertyPath',
             options: content => {
@@ -372,7 +372,7 @@ export default {
         },
         widthField: {
             hidden: (content, sidepanelContent, boundProps) =>
-                (!boundProps.markers || !content.markers) && !content.markersIcon && !content.markersAutoSize,
+                !boundProps.markers || !content.markers || !content.markersIcon || !content.markersAutoSize,
             label: 'Marker with field',
             type: 'ObjectPropertyPath',
             options: content => {
@@ -385,7 +385,7 @@ export default {
         },
         heightField: {
             hidden: (content, sidepanelContent, boundProps) =>
-                (!boundProps.markers || !content.markers) && !content.markersIcon && !content.markersAutoSize,
+                !boundProps.markers || !content.markers || !content.markersIcon || !content.markersAutoSize,
             label: 'Marker with field',
             type: 'ObjectPropertyPath',
             options: content => {
