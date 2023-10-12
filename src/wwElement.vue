@@ -107,8 +107,8 @@ export default {
                 },
                 rawData: marker,
                 url: wwLib.resolveObjectPropertyPath(marker, urlField),
-                width: wwLib.resolveObjectPropertyPath(marker, widthField),
-                height: wwLib.resolveObjectPropertyPath(marker, heightField),
+                width: parseInt(wwLib.resolveObjectPropertyPath(marker, widthField) || 0),
+                height: parseInt(wwLib.resolveObjectPropertyPath(marker, heightField) || 0),
             }));
         },
     },
@@ -202,8 +202,7 @@ export default {
 
             for (const marker of this.markers) {
                 try {
-                    const width = parseInt(marker.width || 0);
-                    const height = parseInt(marker.height || 0);
+                    debugger;
                     let _marker = new google.maps.Marker({
                         position: marker.position,
                         map: this.map,
@@ -211,8 +210,8 @@ export default {
                             ? {
                                   url: marker.url,
                                   scaledSize:
-                                      this.markersAutoSize && width && height
-                                          ? new google.maps.Size(width, height)
+                                      this.content.markersAutoSize && marker.width && marker.height
+                                          ? new google.maps.Size(marker.width, marker.height)
                                           : undefined,
                               }
                             : {},
