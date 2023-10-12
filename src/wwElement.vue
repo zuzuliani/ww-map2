@@ -24,6 +24,9 @@ import stylesConfig from './stylesConfig.json';
 const DEFAULT_MARKER_NAME_FIELD = 'name';
 const DEFAULT_MARKER_LAT_FIELD = 'lat';
 const DEFAULT_MARKER_LNG_FIELD = 'lng';
+const DEFAULT_MARKER_URL_FIELD = 'url';
+const DEFAULT_MARKER_WIDTH_FIELD = 'width';
+const DEFAULT_MARKER_HEIGHT_FIELD = 'height';
 
 export default {
     props: {
