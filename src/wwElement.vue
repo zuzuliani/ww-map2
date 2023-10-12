@@ -202,7 +202,6 @@ export default {
 
             for (const marker of this.markers) {
                 try {
-                    debugger;
                     let _marker = new google.maps.Marker({
                         position: marker.position,
                         map: this.map,
@@ -217,6 +216,7 @@ export default {
                             : {},
                         animation: google.maps.Animation.DROP,
                     });
+
                     this.markerInstances.push(_marker);
                     if (marker.content) {
                         const infowindow = new google.maps.InfoWindow({

@@ -376,7 +376,7 @@ export default {
         widthField: {
             hidden: (content, sidepanelContent, boundProps) =>
                 !boundProps.markers || !content.markers || !content.markersIcon || !content.markersAutoSize,
-            label: 'Marker with field',
+            label: 'Marker width field',
             type: 'ObjectPropertyPath',
             options: content => {
                 return !content.markers.length || typeof content.markers[0] !== 'object'
@@ -389,7 +389,7 @@ export default {
         heightField: {
             hidden: (content, sidepanelContent, boundProps) =>
                 !boundProps.markers || !content.markers || !content.markersIcon || !content.markersAutoSize,
-            label: 'Marker with field',
+            label: 'Marker height field',
             type: 'ObjectPropertyPath',
             options: content => {
                 return !content.markers.length || typeof content.markers[0] !== 'object'
