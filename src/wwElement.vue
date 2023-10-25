@@ -117,6 +117,12 @@ export default {
         'content.googleKey'() {
             this.initMap();
         },
+        'content.markersIcon'() {
+            this.initMap();
+        },
+        'content.markersAutoSize'() {
+            this.initMap();
+        },
         'content.zoom'(value) {
             if (this.map) this.map.setZoom(value || 0);
         },
@@ -202,12 +208,16 @@ export default {
 
             for (const marker of this.markers) {
                 try {
+                    const url =
+                        marker.url && marker.url.startsWith('designs/')
+                            ? `${wwLib.wwUtils.getCdnPrefix()}${marker.url}`
+                            : marker.url;
                     let _marker = new google.maps.Marker({
                         position: marker.position,
                         map: this.map,
                         icon: this.content.markersIcon
                             ? {
-                                  url: marker.url,
+                                  url,
                                   scaledSize:
                                       !this.content.markersAutoSize && marker.width && marker.height
                                           ? new google.maps.Size(marker.width, marker.height)

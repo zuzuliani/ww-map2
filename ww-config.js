@@ -258,6 +258,10 @@ export default {
                                     tooltip: 'A string that represents the image url: `"https://.../.../my_image.png"`',
                                 },
                                 hidden: (content, _sidepanelContent, boundProps) => !content.markersIcon,
+                                bindingValidation: {
+                                    type: 'string',
+                                    tooltip: 'A string that represents the icon url: `"https://.../.../my_image.png"`',
+                                },
                                 /* wwEditor:end */
                             },
                             width: {
@@ -268,6 +272,10 @@ export default {
                                 /* wwEditor:start */
                                 hidden: (content, _sidepanelContent, boundProps) =>
                                     !content.markersIcon || content.markersAutoSize,
+                                bindingValidation: {
+                                    type: 'number',
+                                    tooltip: 'A number that defines the width of the icon: `11`',
+                                },
                                 /* wwEditor:end */
                             },
                             height: {
@@ -278,6 +286,10 @@ export default {
                                 /* wwEditor:start */
                                 hidden: (content, _sidepanelContent, boundProps) =>
                                     !content.markersIcon || content.markersAutoSize,
+                                bindingValidation: {
+                                    type: 'number',
+                                    tooltip: 'A number that defines the height of the icon: `11`',
+                                },
                                 /* wwEditor:end */
                             },
                         },
