@@ -238,6 +238,13 @@ export default {
                                       scaledSize:
                                           !this.content.markersAutoSize && marker.width && marker.height
                                               ? new google.maps.Size(marker.width, marker.height)
+                                              : !this.content.markersAutoSize &&
+                                                this.content.defaultMarkerWidth &&
+                                                this.content.defaultMarkerHeight
+                                              ? new google.maps.Size(
+                                                    this.content.defaultMarkerWidth,
+                                                    this.content.defaultMarkerHeight
+                                                )
                                               : undefined,
                                   }
                                 : {
