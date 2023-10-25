@@ -123,6 +123,18 @@ export default {
         'content.markersAutoSize'() {
             this.initMap();
         },
+        'content.defaultMarkerUrl'() {
+            this.initMap();
+        },
+        'content.defaultMarkerUrl'() {
+            this.initMap();
+        },
+        'content.defaultMarkerWidth'() {
+            this.initMap();
+        },
+        'content.defaultMarkerHeight'() {
+            this.initMap();
+        },
         'content.zoom'(value) {
             if (this.map) this.map.setZoom(value || 0);
         },
@@ -212,17 +224,34 @@ export default {
                         marker.url && marker.url.startsWith('designs/')
                             ? `${wwLib.wwUtils.getCdnPrefix()}${marker.url}`
                             : marker.url;
+                    const defaultMarkerUrl =
+                        this.content.defaultMarkerUrl && this.content.defaultMarkerUrl.startsWith('designs/')
+                            ? `${wwLib.wwUtils.getCdnPrefix()}${this.content.defaultMarkerUrl}`
+                            : this.content.defaultMarkerUrl;
                     let _marker = new google.maps.Marker({
                         position: marker.position,
                         map: this.map,
                         icon: this.content.markersIcon
-                            ? {
-                                  url,
-                                  scaledSize:
-                                      !this.content.markersAutoSize && marker.width && marker.height
-                                          ? new google.maps.Size(marker.width, marker.height)
-                                          : undefined,
-                              }
+                            ? url
+                                ? {
+                                      url,
+                                      scaledSize:
+                                          !this.content.markersAutoSize && marker.width && marker.height
+                                              ? new google.maps.Size(marker.width, marker.height)
+                                              : undefined,
+                                  }
+                                : {
+                                      url: defaultMarkerUrl,
+                                      scaledSize:
+                                          !this.content.markersAutoSize &&
+                                          this.content.defaultMarkerWidth &&
+                                          this.content.defaultMarkerHeight
+                                              ? new google.maps.Size(
+                                                    this.content.defaultMarkerWidth,
+                                                    this.content.defaultMarkerHeight
+                                                )
+                                              : undefined,
+                                  }
                             : {},
                         animation: google.maps.Animation.DROP,
                     });
