@@ -302,7 +302,7 @@ export default {
                                 options: { placeholder: 'Longitude' },
                             },
                             url: {
-                                label: { en: 'Custom marker icon”' },
+                                label: { en: 'Custom marker icon' },
                                 type: 'Image',
                                 bindable: true,
                                 options: { nullable: true },
