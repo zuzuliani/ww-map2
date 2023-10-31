@@ -24,6 +24,9 @@ import stylesConfig from './stylesConfig.json';
 const DEFAULT_MARKER_NAME_FIELD = 'name';
 const DEFAULT_MARKER_LAT_FIELD = 'lat';
 const DEFAULT_MARKER_LNG_FIELD = 'lng';
+const DEFAULT_MARKER_URL_FIELD = 'url';
+const DEFAULT_MARKER_WIDTH_FIELD = 'width';
+const DEFAULT_MARKER_HEIGHT_FIELD = 'height';
 
 export default {
     props: {
@@ -90,6 +93,9 @@ export default {
             const nameField = this.content.nameField || DEFAULT_MARKER_NAME_FIELD;
             const latField = this.content.latField || DEFAULT_MARKER_LAT_FIELD;
             const lngField = this.content.lngField || DEFAULT_MARKER_LNG_FIELD;
+            const urlField = this.content.urlField || DEFAULT_MARKER_URL_FIELD;
+            const widthField = this.content.widthField || DEFAULT_MARKER_WIDTH_FIELD;
+            const heightField = this.content.heightField || DEFAULT_MARKER_HEIGHT_FIELD;
 
             if (!Array.isArray(this.content.markers)) return [];
 
@@ -100,12 +106,33 @@ export default {
                     lng: parseFloat(wwLib.resolveObjectPropertyPath(marker, lngField) || 0),
                 },
                 rawData: marker,
+                url: wwLib.resolveObjectPropertyPath(marker, urlField),
+                width: parseInt(wwLib.resolveObjectPropertyPath(marker, widthField) || 0),
+                height: parseInt(wwLib.resolveObjectPropertyPath(marker, heightField) || 0),
             }));
         },
     },
     watch: {
         /* wwEditor:start */
         'content.googleKey'() {
+            this.initMap();
+        },
+        'content.markersIcon'() {
+            this.initMap();
+        },
+        'content.markersAutoSize'() {
+            this.initMap();
+        },
+        'content.defaultMarkerUrl'() {
+            this.initMap();
+        },
+        'content.defaultMarkerUrl'() {
+            this.initMap();
+        },
+        'content.defaultMarkerWidth'() {
+            this.initMap();
+        },
+        'content.defaultMarkerHeight'() {
             this.initMap();
         },
         'content.zoom'(value) {
@@ -193,11 +220,49 @@ export default {
 
             for (const marker of this.markers) {
                 try {
+                    const url =
+                        marker.url && marker.url.startsWith('designs/')
+                            ? `${wwLib.wwUtils.getCdnPrefix()}${marker.url}`
+                            : marker.url;
+                    const defaultMarkerUrl =
+                        this.content.defaultMarkerUrl && this.content.defaultMarkerUrl.startsWith('designs/')
+                            ? `${wwLib.wwUtils.getCdnPrefix()}${this.content.defaultMarkerUrl}`
+                            : this.content.defaultMarkerUrl;
                     let _marker = new google.maps.Marker({
                         position: marker.position,
                         map: this.map,
+                        icon: this.content.markersIcon
+                            ? url
+                                ? {
+                                      url,
+                                      scaledSize:
+                                          !this.content.markersAutoSize && marker.width && marker.height
+                                              ? new google.maps.Size(marker.width, marker.height)
+                                              : !this.content.markersAutoSize &&
+                                                this.content.defaultMarkerWidth &&
+                                                this.content.defaultMarkerHeight
+                                              ? new google.maps.Size(
+                                                    this.content.defaultMarkerWidth,
+                                                    this.content.defaultMarkerHeight
+                                                )
+                                              : undefined,
+                                  }
+                                : {
+                                      url: defaultMarkerUrl,
+                                      scaledSize:
+                                          !this.content.markersAutoSize &&
+                                          this.content.defaultMarkerWidth &&
+                                          this.content.defaultMarkerHeight
+                                              ? new google.maps.Size(
+                                                    this.content.defaultMarkerWidth,
+                                                    this.content.defaultMarkerHeight
+                                                )
+                                              : undefined,
+                                  }
+                            : {},
                         animation: google.maps.Animation.DROP,
                     });
+
                     this.markerInstances.push(_marker);
                     if (marker.content) {
                         const infowindow = new google.maps.InfoWindow({
