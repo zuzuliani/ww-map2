@@ -181,20 +181,18 @@ export default {
         {
             name: 'panTo',
             label: { en: 'Pan to location' },
-            parameters: [
-                {
-                    name: 'lat',
+            parameters: {
+                lat: {
                     label: { en: 'Latitude' },
                     type: 'Number',
                     required: true,
                 },
-                {
-                    name: 'lng',
+                lng: {
                     label: { en: 'Longitude' },
                     type: 'Number',
                     required: true,
                 },
-            ],
+            },
         },
     ],
     properties: {
