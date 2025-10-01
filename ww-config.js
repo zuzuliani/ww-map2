@@ -32,9 +32,18 @@ export default {
                 'widthField',
                 'heightField',
                 'markerTooltipTrigger',
-                'fixedBounds',
             ],
             [
+                'areas',
+                'hintAreaFields',
+                'areaNameField',
+                'areaColorField',
+                'areaPointsField',
+                'areaLatField',
+                'areaLngField',
+            ],
+            [
+                'fixedBounds',
                 'zoomControl',
                 'scaleControl',
                 'rotateControl',
@@ -112,6 +121,60 @@ export default {
                 domEvent: { x: 128, y: 156, target: null },
             },
             getTestEvent: 'getMarkerTestEvent',
+        },
+        {
+            name: 'area:click',
+            label: { en: 'On area click' },
+            event: {
+                area: {
+                    name: 'Manhattan',
+                    color: '#FF0000',
+                    coordinates: [
+                        { lat: 40.7831, lng: -73.9712 },
+                        { lat: 40.7489, lng: -73.9857 },
+                        { lat: 40.7282, lng: -73.7949 },
+                    ],
+                    rawData: {},
+                },
+                domEvent: { x: 128, y: 156, target: null },
+            },
+            getTestEvent: 'getAreaTestEvent',
+        },
+        {
+            name: 'area:mouseover',
+            label: { en: 'On area mouse enter' },
+            event: {
+                area: {
+                    name: 'Manhattan',
+                    color: '#FF0000',
+                    coordinates: [
+                        { lat: 40.7831, lng: -73.9712 },
+                        { lat: 40.7489, lng: -73.9857 },
+                        { lat: 40.7282, lng: -73.7949 },
+                    ],
+                    rawData: {},
+                },
+                domEvent: { x: 128, y: 156, target: null },
+            },
+            getTestEvent: 'getAreaTestEvent',
+        },
+        {
+            name: 'area:mouseout',
+            label: { en: 'On area mouse leave' },
+            event: {
+                area: {
+                    name: 'Manhattan',
+                    color: '#FF0000',
+                    coordinates: [
+                        { lat: 40.7831, lng: -73.9712 },
+                        { lat: 40.7489, lng: -73.9857 },
+                        { lat: 40.7282, lng: -73.7949 },
+                    ],
+                    rawData: {},
+                },
+                domEvent: { x: 128, y: 156, target: null },
+            },
+            getTestEvent: 'getAreaTestEvent',
         },
     ],
     properties: {
@@ -475,6 +538,146 @@ export default {
                 ],
             },
             defaultValue: 'hover',
+            section: 'settings',
+        },
+        areas: {
+            section: 'settings',
+            label: { en: 'Areas', fr: 'Areas' },
+            bindable: true,
+            type: 'Array',
+            options: {
+                item: {
+                    type: 'Object',
+                    defaultValue: { name: '', color: '#FF0000', points: '' },
+                    options: {
+                        item: {
+                            name: {
+                                label: { en: 'Name' },
+                                type: 'Text',
+                                options: { placeholder: 'Area name' },
+                            },
+                            color: {
+                                label: { en: 'Color' },
+                                type: 'Color',
+                                options: { placeholder: '#FF0000' },
+                            },
+                            points: {
+                                label: { en: 'Coordinates' },
+                                type: 'Text',
+                                options: {
+                                    placeholder: '40.7831,-73.9712;40.7489,-73.9857;40.7282,-73.7949',
+                                    multiline: true
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            defaultValue: [],
+            /* wwEditor:start */
+            bindingValidation: {
+                type: 'array',
+                tooltip:
+                    'A collection of area data in array format: \n\n `[{name: "Area 1", color: "#FF0000", points: "lat1,lng1;lat2,lng2;lat3,lng3"}, ...]`',
+            },
+            /* wwEditor:end */
+        },
+        hintAreaFields: {
+            hidden: (content, sidepanelContent, boundProps) => !boundProps.areas || content.areas,
+            label: {
+                en: 'Area fields',
+                fr: 'Champs des areas',
+            },
+            type: 'Info',
+            options: {
+                text: { en: 'Please provide at least one area to configure fields' },
+            },
+            editorOnly: true,
+            section: 'settings',
+        },
+        areaNameField: {
+            hidden: (content, sidepanelContent, boundProps) => !boundProps.areas || !content.areas,
+            label: {
+                en: 'Area name field',
+                fr: 'Area name field',
+            },
+            type: 'ObjectPropertyPath',
+            options: content => {
+                if (!content.areas.length || typeof content.areas[0] !== 'object') {
+                    return null;
+                }
+
+                return { object: content.areas[0] };
+            },
+            defaultValue: null,
+            section: 'settings',
+        },
+        areaColorField: {
+            hidden: (content, sidepanelContent, boundProps) => !boundProps.areas || !content.areas,
+            label: {
+                en: 'Area color field',
+                fr: 'Area color field',
+            },
+            type: 'ObjectPropertyPath',
+            options: content => {
+                if (!content.areas.length || typeof content.areas[0] !== 'object') {
+                    return null;
+                }
+
+                return { object: content.areas[0] };
+            },
+            defaultValue: null,
+            section: 'settings',
+        },
+        areaPointsField: {
+            hidden: (content, sidepanelContent, boundProps) => !boundProps.areas || !content.areas,
+            label: {
+                en: 'Area points field',
+                fr: 'Area points field',
+            },
+            type: 'ObjectPropertyPath',
+            options: content => {
+                if (!content.areas.length || typeof content.areas[0] !== 'object') {
+                    return null;
+                }
+
+                return { object: content.areas[0] };
+            },
+            defaultValue: null,
+            section: 'settings',
+        },
+        areaLatField: {
+            hidden: (content, sidepanelContent, boundProps) => !boundProps.areas || !content.areas,
+            label: {
+                en: 'Area lat. field',
+                fr: 'Area lat. field',
+            },
+            type: 'ObjectPropertyPath',
+            options: content => {
+                if (!content.areas.length || typeof content.areas[0] !== 'object') {
+                    return null;
+                }
+
+                return { object: content.areas[0] };
+            },
+            defaultValue: null,
+            section: 'settings',
+        },
+        areaLngField: {
+            hidden: (content, sidepanelContent, boundProps) => !boundProps.areas || !content.areas,
+            label: {
+                en: 'Area long. field',
+                fr: 'Area long. field',
+            },
+            type: 'ObjectPropertyPath',
+            options: content => {
+                if (!content.areas.length || typeof content.areas[0] !== 'object') {
+                    return null;
+                }
+
+                return { object: content.areas[0] };
+            },
+            defaultValue: null,
             section: 'settings',
         },
         fixedBounds: {

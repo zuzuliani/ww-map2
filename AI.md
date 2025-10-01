@@ -30,7 +30,13 @@ Displays an interactive Google Maps within the webpage for visualizing geographi
 - widthField: string | null - Field name for marker icon width. Default: null
 - heightField: string | null - Field name for marker icon height. Default: null
 - markerTooltipTrigger: null | 'hover' | 'click' - Trigger for marker tooltips. Default: 'hover'
-- fixedBounds: boolean - Fix map bounds to markers. Default: true
+- areas: array - Array of area/polygon objects. Default: []
+- areaNameField: string | null - Field name for area name. Default: null
+- areaColorField: string | null - Field name for area color. Default: null
+- areaPointsField: string | null - Field name for area coordinates. Default: null
+- areaLatField: string | null - Field name for area latitude (when using individual points). Default: null
+- areaLngField: string | null - Field name for area longitude (when using individual points). Default: null
+- fixedBounds: boolean - Fix map bounds to markers and areas. Default: true
 - zoomControl: boolean - Show zoom control. Default: true
 - scaleControl: boolean - Show scale control. Default: true
 - rotateControl: boolean - Show rotate control. Default: true
@@ -46,6 +52,13 @@ Displays an interactive Google Maps within the webpage for visualizing geographi
 - marker:mouseover - Triggered when mouse enters marker. Payload: {marker: {content, position, rawData}, domEvent}
 - marker:mouseout - Triggered when mouse leaves marker. Payload: {marker: {content, position, rawData}, domEvent}
 - marker:click - Triggered when marker is clicked. Payload: {marker: {content, position, rawData}, domEvent}
+- area:click - Triggered when area/polygon is clicked. Payload: {area: {name, color, coordinates, rawData}, domEvent}
+- area:mouseover - Triggered when mouse enters area/polygon. Payload: {area: {name, color, coordinates, rawData}, domEvent}
+- area:mouseout - Triggered when mouse leaves area/polygon. Payload: {area: {name, color, coordinates, rawData}, domEvent}
 
 ***Notes:***
 - If no API key is provided, inform user to provide one for map functionality.
+- Areas/polygons require at least 3 coordinate points to form a valid shape.
+- Area coordinates can be provided as an array of {lat, lng} objects or as a semicolon-separated string like "lat1,lng1;lat2,lng2;lat3,lng3".
+- Area colors should be provided as hex color codes (e.g., "#FF0000" for red).
+- The fixedBounds property will automatically adjust the map view to include both markers and areas.
