@@ -94,6 +94,8 @@ export default {
                 streetViewControl: this.content.streetViewControl,
                 fullscreenControl: this.content.fullscreenControl,
                 mapTypeControl: this.content.mapTypeControl,
+                gestureHandling: 'greedy',
+                scrollwheel: true,
             };
         },
         markers() {
