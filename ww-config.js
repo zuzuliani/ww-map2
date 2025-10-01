@@ -179,8 +179,9 @@ export default {
     ],
     actions: [
         {
-            name: 'panTo',
             label: { en: 'Pan to location' },
+            code: 'panTo',
+            isAsync: false,
             parameters: {
                 lat: {
                     label: { en: 'Latitude' },
