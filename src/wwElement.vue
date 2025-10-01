@@ -71,6 +71,7 @@ export default {
             loader: null,
             wrongKey: false,
             observer: null,
+            _isDataUpdate: false,
         };
     },
     computed: {
@@ -217,10 +218,14 @@ export default {
         },
         /* wwEditor:end */
         markers() {
+            this._isDataUpdate = true;
             this.updateMapMarkers();
+            this._isDataUpdate = false;
         },
         areas() {
+            this._isDataUpdate = true;
             this.updateMapAreas();
+            this._isDataUpdate = false;
         },
         mapOptions() {
             this.initMap();
@@ -284,6 +289,10 @@ export default {
         },
         async updateMapMarkers() {
             if (!this.markers || !this.loader) return;
+
+            // Store current map state
+            const currentCenter = this.map.getCenter();
+            const currentZoom = this.map.getZoom();
 
             for (const markerInstance of this.markerInstances) {
                 markerInstance.setMap(null);
@@ -375,12 +384,21 @@ export default {
                 }
             }
 
-            if (this.content.fixedBounds) {
+            // Only adjust bounds on initial load, not on data updates
+            if (this.content.fixedBounds && !this._isDataUpdate) {
                 this.setMapMarkerBounds();
+            } else if (this._isDataUpdate) {
+                // Restore previous view when data updates
+                this.map.setCenter(currentCenter);
+                this.map.setZoom(currentZoom);
             }
         },
         async updateMapAreas() {
             if (!this.areas || !this.loader) return;
+
+            // Store current map state
+            const currentCenter = this.map.getCenter();
+            const currentZoom = this.map.getZoom();
 
             // Clear existing areas
             for (const areaInstance of this.areaInstances) {
@@ -447,6 +465,15 @@ export default {
                 } catch (error) {
                     wwLib.wwLog.error('Error creating area polygon:', error);
                 }
+            }
+
+            // Only adjust bounds on initial load, not on data updates
+            if (this.content.fixedBounds && !this._isDataUpdate) {
+                this.setMapMarkerBounds();
+            } else if (this._isDataUpdate) {
+                // Restore previous view when data updates
+                this.map.setCenter(currentCenter);
+                this.map.setZoom(currentZoom);
             }
         },
         setMapMarkerBounds() {
