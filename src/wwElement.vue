@@ -342,7 +342,7 @@ export default {
                                               : undefined,
                                   }
                             : {},
-                        animation: google.maps.Animation.DROP,
+                        // animation: google.maps.Animation.DROP, // Removed to prevent dropping on updates
                     });
 
                     this.markerInstances.push(_marker);
