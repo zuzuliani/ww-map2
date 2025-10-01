@@ -179,20 +179,26 @@ export default {
     ],
     actions: [
         {
-            name: 'panTo',
             label: { en: 'Pan to location' },
-            parameters: [
+            action: 'panToLocation',
+            args: [
                 {
-                    name: 'lat',
+                    name: 'latitude',
+                    type: 'number',
                     label: { en: 'Latitude' },
-                    type: 'Number',
-                    defaultValue: 0,
+                    validation: {
+                        type: 'number',
+                        tooltip: 'A number that defines the latitude: `40.712784`',
+                    },
                 },
                 {
-                    name: 'lng',
+                    name: 'longitude',
+                    type: 'number',
                     label: { en: 'Longitude' },
-                    type: 'Number',
-                    defaultValue: 0,
+                    validation: {
+                        type: 'number',
+                        tooltip: 'A number that defines the longitude: `-74.005941`',
+                    },
                 },
             ],
         },

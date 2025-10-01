@@ -20,6 +20,7 @@
 <script>
 import { Loader } from './googleLoader';
 import stylesConfig from './stylesConfig.json';
+import { ref } from 'vue';
 
 const DEFAULT_MARKER_NAME_FIELD = 'name';
 const DEFAULT_MARKER_LAT_FIELD = 'lat';
@@ -44,9 +45,25 @@ export default {
     },
     emits: ['trigger-event', 'update:content:effect'],
     setup() {
+        const mapRef = ref(null);
         const markerInstances = [];
         const areaInstances = [];
-        return { markerInstances, areaInstances };
+        
+        const panToLocation = (latitude, longitude, zoom = 15) => {
+            if (!mapRef.value) {
+                console.error('Map is not initialized yet');
+                return;
+            }
+
+            try {
+                const position = new google.maps.LatLng(parseFloat(latitude), parseFloat(longitude));
+                mapRef.value.panTo(position);
+            } catch (error) {
+                console.error('Error panning to location:', error);
+            }
+        };
+
+        return { mapRef, markerInstances, areaInstances, panToLocation };
     },
     data() {
         return {
@@ -250,6 +267,7 @@ export default {
 
             try {
                 this.map = new google.maps.Map(this.$refs.map, { ...this.mapOptions, zoom: this.content.zoom });
+                this.mapRef = this.map; // Store the map reference
                 this.map.addListener('click', mapsMouseEvent => {
                     mapsMouseEvent.latLng.lat = mapsMouseEvent.latLng.lat();
                     mapsMouseEvent.latLng.lng = mapsMouseEvent.latLng.lng();
@@ -459,20 +477,6 @@ export default {
             return { area: this.areas[0], domEvent: { x: 128, y: 156, target: null } };
         },
         /* wwEditor:end */
-        panTo({ lat, lng }) {
-            if (!this.map) {
-                wwLib.wwLog.warn('Map not initialized yet');
-                return;
-            }
-            
-            if (typeof lat !== 'number' || typeof lng !== 'number') {
-                wwLib.wwLog.error('panTo requires numeric lat and lng parameters');
-                return;
-            }
-            
-            const location = new google.maps.LatLng(lat, lng);
-            this.map.panTo(location);
-        },
     },
 };
 </script>
