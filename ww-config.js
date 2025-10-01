@@ -177,6 +177,26 @@ export default {
             getTestEvent: 'getAreaTestEvent',
         },
     ],
+    actions: [
+        {
+            name: 'panTo',
+            label: { en: 'Pan to location' },
+            parameters: [
+                {
+                    name: 'lat',
+                    label: { en: 'Latitude' },
+                    type: 'Number',
+                    required: true,
+                },
+                {
+                    name: 'lng',
+                    label: { en: 'Longitude' },
+                    type: 'Number',
+                    required: true,
+                },
+            ],
+        },
+    ],
     properties: {
         defaultMapType: {
             label: {

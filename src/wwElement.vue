@@ -457,6 +457,20 @@ export default {
             return { area: this.areas[0], domEvent: { x: 128, y: 156, target: null } };
         },
         /* wwEditor:end */
+        panTo(lat, lng) {
+            if (!this.map) {
+                wwLib.wwLog.warn('Map not initialized yet');
+                return;
+            }
+            
+            if (typeof lat !== 'number' || typeof lng !== 'number') {
+                wwLib.wwLog.error('panTo requires numeric lat and lng parameters');
+                return;
+            }
+            
+            const location = new google.maps.LatLng(lat, lng);
+            this.map.panTo(location);
+        },
     },
 };
 </script>
