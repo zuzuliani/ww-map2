@@ -179,21 +179,22 @@ export default {
     ],
     actions: [
         {
+            name: 'panTo',
             label: { en: 'Pan to location' },
-            code: 'panTo',
-            isAsync: false,
-            parameters: {
-                lat: {
+            parameters: [
+                {
+                    name: 'lat',
                     label: { en: 'Latitude' },
                     type: 'Number',
-                    required: true,
+                    defaultValue: 0,
                 },
-                lng: {
+                {
+                    name: 'lng',
                     label: { en: 'Longitude' },
                     type: 'Number',
-                    required: true,
+                    defaultValue: 0,
                 },
-            },
+            ],
         },
     ],
     properties: {

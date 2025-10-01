@@ -457,7 +457,7 @@ export default {
             return { area: this.areas[0], domEvent: { x: 128, y: 156, target: null } };
         },
         /* wwEditor:end */
-        panTo(lat, lng) {
+        panTo({ lat, lng }) {
             if (!this.map) {
                 wwLib.wwLog.warn('Map not initialized yet');
                 return;
